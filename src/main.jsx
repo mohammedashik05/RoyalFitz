@@ -4,11 +4,12 @@ import App from './App';
 import { BrowserRouter } from 'react-router-dom';
 // import { ProductProvider } from '../components/ProductProvider.jsx';
 import ProductProvider from "./components/ProductProvider.jsx";
+import Register from './components/Register.jsx';
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <BrowserRouter>
     <ProductProvider >
-      <App />
+      <Register />
     </ProductProvider>
 
   </BrowserRouter>
