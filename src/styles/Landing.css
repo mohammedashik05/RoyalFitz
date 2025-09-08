@@ -1,0 +1,118 @@
+/* Landing page container */
+.landing-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  background-color: #f5f5f5; /* Light background */
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #333; /* Dark text */
+  text-align: center;
+  padding: 0 20px;
+}
+
+/* Heading */
+.landing-container h1 {
+  font-size: 3rem;
+  margin-bottom: 20px;
+  font-weight: bold;
+  color: #333;
+}
+
+.landing-container h1 span {
+  color: #FF6600; /* Orange highlight for "Wear" */
+}
+
+/* Paragraph */
+.landing-container p {
+  font-size: 1.2rem;
+  margin-bottom: 40px;
+  color: #555; /* Slightly lighter than main text */
+}
+
+/* Button container */
+.btn-group{
+  display: flex;
+  flex-wrap: wrap; /* Wrap if space is small */
+  justify-content: center;
+  gap: 10px;
+  
+}
+
+/* Buttons */
+.landing-container .btn {
+  background-color: #FF6600; /* Orange button */
+  color: #fff;
+  border: none;
+  padding: 12px 30px;
+  border-radius: 5px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-weight: bold;
+  text-decoration: none;
+  box-shadow: 0px 4px 10px rgba(0,0,0,0.1);
+}
+
+/* Hover effect */
+.landing-container .btn:hover {
+  background-color: #e65c00; /* Darker orange on hover */
+  transform: translateY(-2px);
+  box-shadow: 0px 6px 15px rgba(0,0,0,0.2);
+}
+
+
+/* -------------------
+   RESPONSIVE STYLES
+------------------- */
+
+/* Logo Styling */
+.landing-logo {
+  font-family: 'Poppins', sans-serif; /* You can use Google Fonts */
+  font-size: 3rem;
+  font-weight: 700;
+  color: #000; /* Black */
+  margin-bottom: 15px;
+  letter-spacing: 2px;
+}
+
+.landing-logo span {
+  color: #FF6600; /* Orange highlight (brand color) */
+}
+
+/* Tablet */
+@media (max-width: 992px) {
+  .landing-container h1 {
+    font-size: 2.5rem;
+  }
+
+  .landing-container p {
+    font-size: 1.1rem;
+  }
+}
+
+/* Mobile */
+@media (max-width: 300px) {
+  .landing-container {
+    padding: 0 15px;
+  }
+
+  .landing-container h1 {
+    font-size: 2rem;
+  }
+
+  .landing-container p {
+    font-size: 1rem;
+  }
+
+  .con {
+    flex-direction: column; /* Stack buttons vertically */
+    gap: 10px;
+  }
+
+  .landing-container .btn {
+    width: 100%; /* Full width buttons on mobile */
+    max-width: 250px;
+  }
+}

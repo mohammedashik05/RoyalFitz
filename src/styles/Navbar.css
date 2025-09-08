@@ -93,6 +93,13 @@
   z-index: 5;
 }
 
+.navbar_logout{
+  padding: 7px 10px;
+  border-style: none;
+  color: #fff;
+  background-color: #ff6600;
+  border-radius: 3px;
+}
 /* RESPONSIVE STYLES */
 @media (max-width: 768px) {
   .navbar__links {

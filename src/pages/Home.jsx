@@ -3,35 +3,46 @@ import { FaSearch } from "react-icons/fa";
 import "../styles/Home.css";
 import products from "../data/products";
 import ProductCard from "../components/ProductCard";
-import Footer from "../components/Footer.jsx" 
+import Footer from "../components/Footer.jsx";
+
+function shuffleArray(array) {
+    // Fisher-Yates shuffle
+    const arr = array.slice();
+    for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+}
+
+function getItemsPerPage() {
+    const width = window.innerWidth;
+    if (width <= 600) return 5;            // Mobile
+    if (width <= 1024) return 9;           // Tablet
+    return 15;                             // Desktop
+}
 
 function Home() {
     const [currentPage, setCurrentPage] = useState(1);
     const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
+    const [shuffledProducts, setShuffledProducts] = useState(shuffleArray(products));
 
-    // Set itemsPerPage based on screen width
-    function getItemsPerPage() {
-        const width = window.innerWidth;
-        if (width <= 600) return 5;           // Mobile
-        if (width <= 1024) return 9;          // Tablet
-        return 15;                            // Desktop
-    }
-
+    // Re-shuffle products on mount and on resize
     useEffect(() => {
         function handleResize() {
             setItemsPerPage(getItemsPerPage());
             setCurrentPage(1); // Optional: reset page on resize
+            setShuffledProducts(shuffleArray(products)); // Re-shuffle on resize
         }
-
         window.addEventListener("resize", handleResize);
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
     const startIndex = (currentPage - 1) * itemsPerPage;
     const endIndex = startIndex + itemsPerPage;
-    const currentProducts = products.slice(startIndex, endIndex);
+    const currentProducts = shuffledProducts.slice(startIndex, endIndex);
 
-    const hasNext = endIndex < products.length;
+    const hasNext = endIndex < shuffledProducts.length;
     const hasPrevious = currentPage > 1;
 
     function handleNextPage() {

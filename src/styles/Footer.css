@@ -2,13 +2,12 @@
 body{
     margin: 0;
     padding: 0;
+    
 }
 .footer {
-  /* background-color: #111; */
   color:#0d0d0d;
   font-family: 'Space Grotesk', sans-serif;
-   
-      box-shadow: 0 3px 21px rgba(8,9,7,0.6);
+  box-shadow: 0 3px 21px rgba(8,9,7,0.6);
   padding-top: 2rem;
   margin: 0px;
 }

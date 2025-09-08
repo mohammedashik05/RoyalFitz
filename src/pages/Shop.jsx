@@ -5,16 +5,16 @@ import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 
 const categories = [
-    { title: "Costumes", sub: ["pants", "Jumpsuits", "Shorts", "Tops", "shirt", "T-shirts"] },
-    { title: "Accessories", sub: ["watch", "Belts", "shoes"] },
-    { title: "Shots", sub: [] },
-    { title: "Others", sub: ["Bold", "Monochrome", "Neutrals"] },
+    { title: "Costumes", sub: ["pants", "jumpsuit", "shorts", "top", "shirt", "t-shirt"] },
+    { title: "Accessories", sub: ["watch", "belt", "shoes"] },
+    { title: "Others", sub: ["Trunk", "vest"] },
 ];
 
 export default function Shop() {
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [openCategories, setOpenCategories] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    const [sortOrder, setSortOrder] = useState("-");
 
     const toggleCategory = (title) => {
         setOpenCategories((prev) =>
@@ -26,6 +26,13 @@ export default function Shop() {
         ? products.filter((product) => product.category === selectedCategory)
         : products;
 
+    // Apply sorting based on the sortOrder selection
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        if (sortOrder === "low-high") return a.price - b.price;
+        if (sortOrder === "high-low") return b.price - a.price;
+        return 0;
+    });
+
     const handleCategoryClick = (category) => {
         setSelectedCategory(selectedCategory === category ? null : category);
         if (window.innerWidth <= 768) setSidebarOpen(false); // auto close on mobile
@@ -35,8 +42,6 @@ export default function Shop() {
         <>
             <div className="shop-page">
                 {/* Mobile Sidebar Toggle Button */}
-
-
                 {/* Sidebar */}
                 <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
                     <div className="filters-header">
@@ -45,7 +50,6 @@ export default function Shop() {
                             RESET
                         </button>
                     </div>
-
                     {categories.map((cat) => (
                         <div key={cat.title} className="filter-group">
                             <div
@@ -73,7 +77,6 @@ export default function Shop() {
                             )}
                         </div>
                     ))}
-
                     {/* Close button for mobile */}
                     <button
                         className="close-sidebar"
@@ -82,13 +85,10 @@ export default function Shop() {
                         ✖ Close
                     </button>
                 </aside>
-
                 {/* Overlay for mobile */}
                 {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}
-
                 {/* Product List */}
                 <main className="product-list">
-
                     <button
                         className="sidebar-toggle"
                         onClick={() => setSidebarOpen(true)}
@@ -96,16 +96,16 @@ export default function Shop() {
                         ☰ Filters
                     </button>
                     <div className="sort-bar">
-                        <span>Sort by</span>
-                        <select>
-                            <option>Price</option>
-                            <option>Name</option>
+                        <span>Sort by Price</span>
+                        <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
+                            <option value="-">-</option>
+                            <option value="low-high">Low to high</option>
+                            <option value="high-low">High to Low</option>
                         </select>
                     </div>
-
                     <div className="product-grid">
-                        {filteredProducts.length > 0 ? (
-                            filteredProducts.map((product) => (
+                        {sortedProducts.length > 0 ? (
+                            sortedProducts.map((product) => (
                                 <ProductCard key={product.id} product={product} />
                             ))
                         ) : (
@@ -114,7 +114,6 @@ export default function Shop() {
                     </div>
                 </main>
             </div>
-
             <Footer />
         </>
     );

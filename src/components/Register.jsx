@@ -1,24 +1,42 @@
 // src/pages/Register.jsx
 import React, { useState } from "react";
-import "../styles/Auth.css"; 
+import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 export default function Register() {
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
-    // TODO: Replace with real DB
-    localStorage.setItem("user", JSON.stringify({ email, password }));
-    navigate("/login");
+
+    try {
+      const res = await axios.post("http://localhost:5000/register", {
+        username,
+        email,
+        password,
+      });
+
+      alert(res.data.message || "Registration successful!");
+      navigate("/login"); // redirect to login after success
+    } catch (err) {
+      alert(err.response?.data?.error || "Something went wrong!");
+    }
   };
 
   return (
     <div className="auth-container">
       <form className="auth-form" onSubmit={handleRegister}>
         <h2 className="auth-title">Register</h2>
+        <input
+          type="text"
+          placeholder="Enter UserName"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
         <input
           type="email"
           placeholder="Enter Email"
@@ -31,7 +49,9 @@ export default function Register() {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        <button type="submit" className="auth-btn">Register</button>
+        <button type="submit" className="auth-btn">
+          Register
+        </button>
         <p>
           Already have an account?{" "}
           <span className="auth-link" onClick={() => navigate("/login")}>

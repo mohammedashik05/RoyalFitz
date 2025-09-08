@@ -1,76 +1,160 @@
-// backend/server.js
-import express from "express";
-import http from "http";
-import { Server } from "socket.io";
-import cors from "cors";
-import mongoose from "mongoose";
-import dotenv from "dotenv";
-import jwt from "jsonwebtoken";
-
-// Load env vars
-dotenv.config();
-console.log("SECRET_KEY loaded ->", process.env.SECRET_KEY); // ✅ Confirm this shows value
-
-import authRoutes from "./routes/authRoutes.js";
-import messageRoutes from "./routes/messageRoutes.js";
-import MSG from "./models/message.js";
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
 const app = express();
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: { origin: "http://localhost:5173", methods: ["GET", "POST"] }
-});
-
-const PORT = process.env.PORT || 7000;
+const PORT = 5000;
+const JWT_SECRET = "WH1zK#8yP*3fYkZ!dGvR2lXqT0oVuP9s"; // ⚠️ put this in .env for production
 
 // Middleware
 app.use(cors());
 app.use(express.json());
 
-// DB Connections
-mongoose.connect(process.env.MONGO_DB_USER)
-  .then(() => console.log("✅ Mongo USER connected"))
-  .catch(err => console.error("USER DB Error:", err));
+// Connect to MongoDB
+mongoose.connect("mongodb://127.0.0.1:27017/testdb", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+})
+.then(() => console.log("✅ MongoDB connected"))
+.catch(err => console.error("❌ MongoDB connection error:", err));
 
-mongoose.createConnection(process.env.MONGO_DB_MSG)
-  .on("connected", () => console.log("✅ Mongo MSG connected"))
-  .on("error", err => console.error("MSG DB Error:", err));
+// =======================
+// User Schema & Model
+// =======================
+const userSchema = new mongoose.Schema({
+  username: { type: String, required: true },
+  email:    { type: String, unique: true, required: true ,match: /^[\w.-]+@[\w.-]+\.\w+$/, },
+  password: { type: String, required: true },
+});
 
-// Routes
-app.use("/api", authRoutes);
-app.use("/msg", messageRoutes);
+const User = mongoose.model("User", userSchema);
 
-// WebSocket Auth
-io.use((socket, next) => {
-  const token = socket.handshake.auth?.token;
-  if (!token) return next(new Error("No token provided"));
+// =======================
+// Auth Middleware
+// =======================
+const authMiddleware = (req, res, next) => {
+  const authHeader = req.headers.authorization;
+  if (!authHeader) return res.status(401).json({ success: false, message: "No token provided" });
 
+  const token = authHeader.split(" ")[1];
   try {
-    socket.user = jwt.verify(token, process.env.SECRET_KEY);
-    return next();
-  } catch (err) {
-    return next(new Error("Invalid / expired token"));
+    const decoded = jwt.verify(token, JWT_SECRET);
+    req.user = decoded; // attach user info
+    next();
+  } catch (error) {
+    return res.status(401).json({ success: false, message: "Invalid or expired token" });
+  }
+};
+
+// =======================
+// Routes
+// =======================
+
+// ✅ Register
+app.post("/register", async (req, res) => {
+  try {
+    const { username, email, password } = req.body;
+    const emailRegex = /^[\w.-]+@[\w.-]+\.\w+$/;
+
+     if (!emailRegex.test(email)) {
+      return res.status(400).json({ success: false, message: "Invalid email format" });
+    }
+
+    if (!username || !email || !password) {
+      return res.status(400).json({ success: false, message: "All fields are required" });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ success: false, message: "User already exists!" });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    const newUser = new User({ username, email, password: hashedPassword });
+    await newUser.save();
+
+    res.status(201).json({ success: true, message: "User registered successfully!" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
   }
 });
 
-io.on("connection", (socket) => {
-  console.log(`🔌 ${socket.user.email} connected (${socket.id})`);
+// ✅ Login
+app.post("/login", async (req, res) => {
+  try {
+    const { email, password } = req.body;
 
-  socket.on("chat:message", async ({ text }) => {
-    if (!text?.trim()) return;
-    const msgDoc = await MSG.create({ text, email: socket.user.email });
-    io.emit("chat:message", {
-      id: msgDoc._id,
-      text,
-      email: socket.user.email
+    if (!email || !password) {
+      return res.status(400).json({ success: false, message: "Email and password required" });
+    }
+
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ success: false, message: "Invalid credentials!" });
+    }
+
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    if (!isPasswordValid) {
+      return res.status(400).json({ success: false, message: "Invalid credentials!" });
+    }
+
+    const token = jwt.sign({ id: user._id, email: user.email }, JWT_SECRET, {
+      expiresIn: "1h",
     });
-  });
 
-  socket.on("disconnect", () => {
-    console.log(`❌ ${socket.user.email} disconnected`);
-  });
+    res.json({
+      success: true,
+      message: "Login successful!",
+      token,
+      user: { id: user._id, username: user.username, email: user.email }
+    });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
 });
 
-server.listen(PORT, () => {
-  console.log(`🚀 REST + WebSocket up on http://localhost:${PORT}`);
+// ✅ Protected Profile Route
+app.get("/profile", authMiddleware, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id).select("-password");
+    if (!user) return res.status(404).json({ success: false, message: "User not found" });
+
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ✅ Get all users (no password)
+app.get("/users", async (req, res) => {
+  try {
+    const users = await User.find().select("-password");
+    res.json({ success: true, users });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ✅ Get user by email (no password)
+app.get("/users/:email", async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email }).select("-password");
+    if (!user) return res.status(404).json({ success: false, message: "User not found!" });
+    res.json({ success: true, user });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+});
+
+// ✅ Root test
+app.get("/", (req, res) => {
+  res.send("Backend working ✅");
+});
+
+// Start Server
+app.listen(PORT, () => {
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
 });
