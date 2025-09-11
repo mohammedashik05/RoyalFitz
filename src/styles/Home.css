@@ -69,3 +69,37 @@
 .navbar__search{
     margin-left: 8px;
 }
+
+/* Marquee.css */
+.marquee {
+  width: 100%;
+  overflow: hidden;
+  white-space: nowrap;
+  box-sizing: border-box;
+  border-top: 2px solid #ff6600;
+  border-bottom: 2px solid #ff6600;
+  background: #f8f8f8;
+  padding: 12px 0;
+}
+
+.marquee-content {
+  display: inline-block;
+  animation: marquee 15s linear infinite;
+}
+
+.marquee-content span {
+  display: inline-block;
+  margin: 0 40px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: #333;
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(-100%);
+  }
+}

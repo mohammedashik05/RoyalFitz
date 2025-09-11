@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
@@ -13,7 +14,10 @@ app.use(cors());
 app.use(express.json());
 
 // Connect to MongoDB
-mongoose.connect("mongodb://127.0.0.1:27017/testdb", {
+const LINK=process.env.MONGO_URI||"mongodb://127.0.0.1:27017/testdb";
+console.log(LINK);
+
+mongoose.connect(LINK, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 })

@@ -3,7 +3,8 @@
     background-repeat: no-repeat;
     background-size: 100% 100%;      /* Full width, keep height ratio */
     background-position: top center; /* Center horizontally, start at top */
-    height: 90vh;                   /* Full viewport height */
+    /* background-clip: border-box; */
+    height: 100vh;                   /* Full viewport height */
     width: 100vw;                    /* Full viewport width */
     margin: 0;
      padding-top: 60px;             /*  Adjust padding as needed for top gap */
@@ -126,7 +127,7 @@
 }
 
 @media (max-width: 1200px) {
-    
+   
   .contact-container {
     max-width: 400px;
     padding: 20px;
@@ -144,12 +145,14 @@
 
 @media (max-width: 600px) {
     .contact-main-container {
-        height: 90vh;
+        height: 100vh;
+        background-size: auto;
+        background-position: center center;
     }
   .contact-container {
     padding: 15px;
     border-radius: 10px;
-    margin-left: 40%;
+    margin: 0 10% 10%  10%;
     
   }
   .contact-container h2 {
@@ -177,7 +180,8 @@
   .contact-container {
     padding: 12px;
     max-width: 100%;
-    margin-left: 40%;
+    margin: 10%;
+   
   }
   .contact-container h2 {
     font-size: 1.2rem;
