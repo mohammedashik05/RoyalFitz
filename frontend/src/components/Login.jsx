@@ -1,9 +1,13 @@
 // src/pages/Login.jsx
+
+
 import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+const apiUrl =  import.meta.env.VITE_URL;
+console.log(apiUrl)
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -22,7 +26,7 @@ export default function Login() {
       setLoading(true);
 
       // API call to backend login route
-      const response = await axios.post("http://localhost:5000/login", {
+      const response = await axios.post(`${apiUrl}/login`, {
         email,
         password,
       });
