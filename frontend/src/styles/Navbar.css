@@ -181,8 +181,13 @@
 .wishlist_icon {
   font-size: 18px; /* base size */
   transition: font-size 0.3s ease;
-}
-
+  /* color: #ff6600; */
+  }
+.wishlist_icon :hover {
+  font-size: 18px; /* base size */
+  transition: font-size 0.3s ease;
+  color: #ff6600;
+  }
 /* Small badge on heart */
 .wishlist-count {
   position: absolute;
@@ -231,3 +236,4 @@
     font-size: 20px; /* bigger on very large screens */
   }
 }
+

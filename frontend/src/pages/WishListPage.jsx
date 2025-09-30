@@ -13,7 +13,7 @@ function WishlistPage() {
   return (
     <>
     <div className="wishlist-page">
-      <h2>My Wishlist</h2>
+      {/* <h2>My Wishlist</h2> */}
       <div className="wishlist-grid">
         {wishlist.map((item) => (
           <div className="wishlist-item" key={item.id}>
