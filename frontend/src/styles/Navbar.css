@@ -19,6 +19,7 @@
   font-weight: 700;
   text-decoration: none;
   color: #333;
+
 }
 
 .navbar__logo .highlight {
@@ -53,6 +54,7 @@
 .cart-icon-wrapper:hover {
   color: #ff6600;
 }
+
 
 /* Cart count badge */
 .cart-count {
@@ -128,10 +130,104 @@
   .navbar__icons {
     margin-left: auto;
   }
+  
 }
 
 @media (min-width: 769px) {
   .navbar__toggle {
     display: none;
+  }
+}
+
+
+@media  (max-width: 480px)
+{
+  
+  .navbar__logo a {
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-decoration: none;
+  color: #333;
+}
+.navbar__toggle {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #333;
+  
+}
+
+/* Icons container (toggle + cart) */
+.navbar__icons {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.navbar_logout{
+  padding: 6px 10px;
+  border-style: none;
+  color: #fff;
+  background-color: #ff6600;
+  border-radius: 3px;
+  font-size: 0.6rem;
+}
+.cart_icon{
+  size: 10px;
+}
+}
+
+/* Default icon size */
+.cart_icon,
+.wishlist_icon {
+  font-size: 18px; /* base size */
+  transition: font-size 0.3s ease;
+}
+
+/* Small badge on heart */
+.wishlist-count {
+  position: absolute;
+  top: -6px;
+  right: -10px;
+  background: red;
+  color: white;
+  font-size: 11px;
+  font-weight: bold;
+  padding: 2px 3px;
+  border-radius: 50%;
+}
+
+/* ----- Responsive tweaks ----- */
+
+/* Tablets */
+@media (max-width: 768px) {
+  .cart_icon,
+  .wishlist_icon {
+    font-size: 16px;
+  }
+
+  .cart-count,
+  .wishlist-count {
+    font-size: 10px;
+  }
+}
+
+/* Mobile phones */
+@media (max-width: 480px) {
+  .cart_icon,
+  .wishlist_icon {
+    font-size: 14px; /* smaller on small screens */
+  }
+
+  .cart-count,
+  .wishlist-count {
+    font-size: 9px;
+  }
+}
+
+/* Large desktop */
+@media (min-width: 1200px) {
+  .cart_icon,
+  .wishlist_icon {
+    font-size: 20px; /* bigger on very large screens */
   }
 }

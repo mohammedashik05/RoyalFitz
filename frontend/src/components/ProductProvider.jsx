@@ -1,70 +1,92 @@
 import React, { createContext, useState } from "react";
 
-import products from "../data/products";
-
+// 1️⃣ Create Context
 export const ProductContext = createContext();
 
-export function ProductProvider({ children }) {
+// 2️⃣ Provider Component
+export default function ProductProvider({ children }) {
+  /* ------------------- CART STATE ------------------- */
   const [cartItems, setCartItems] = useState([]);
 
- 
+  // Add product to cart (or increment quantity if exists)
   const addToCart = (product) => {
     setCartItems((prevItems) => {
-      const existingItem = prevItems.find(
-        (item) => item.id === product.id
-      );
+      const existingItem = prevItems.find((item) => item.id === product.id);
 
       if (existingItem) {
-      
+        // increment quantity
         return prevItems.map((item) =>
           item.id === product.id
             ? { ...item, quantity: item.quantity + 1 }
             : item
         );
       } else {
-        
+        // add new product with quantity 1
         return [...prevItems, { ...product, quantity: 1 }];
       }
     });
   };
 
+  // Increment quantity of an item
   const incrementQuantity = (id) => {
-  setCartItems((prev) =>
-    prev.map((item) =>
-      item.id === id ? { ...item, quantity: item.quantity + 1 } : item
-    )
-  );
-};
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
+  };
 
-const decrementQuantity = (id) => {
-  setCartItems((prev) =>
-    prev.map((item) =>
-      item.id === id
-        ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
-        : item
-    )
-  );
-};
+  // Decrement quantity but not below 1
+  const decrementQuantity = (id) => {
+    setCartItems((prev) =>
+      prev.map((item) =>
+        item.id === id
+          ? { ...item, quantity: item.quantity > 1 ? item.quantity - 1 : 1 }
+          : item
+      )
+    );
+  };
 
-const removeFromCart = (id) => {
-  setCartItems((prev) => prev.filter((item) => item.id !== id));
-};
+  // Remove an item completely from cart
+  const removeFromCart = (id) => {
+    setCartItems((prev) => prev.filter((item) => item.id !== id));
+  };
 
-const clearCart =()=>{
-  setCartItems([]);
+  // Clear entire cart
+  const clearCart = () => {
+    setCartItems([]);
+  };
 
-}
+  /* ------------------- WISHLIST STATE ------------------- */
+  const [wishlist, setWishlist] = useState([]);
 
-// Make sure to export these:
+  // Toggle add/remove from wishlist
+  const toggleWishlist = (product) => {
+    setWishlist((prev) => {
+      const exists = prev.find((item) => item.id === product.id);
+      return exists
+        ? prev.filter((item) => item.id !== product.id) // remove if exists
+        : [...prev, product]; // add if not
+    });
+  };
 
-
-
+  /* ------------------- CONTEXT VALUE ------------------- */
   return (
-    <ProductContext.Provider value={{ cartItems, addToCart, incrementQuantity, decrementQuantity, removeFromCart ,clearCart}}>
+    <ProductContext.Provider
+      value={{
+        // cart functions & data
+        cartItems,
+        addToCart,
+        incrementQuantity,
+        decrementQuantity,
+        removeFromCart,
+        clearCart,
+        // wishlist functions & data
+        wishlist,
+        toggleWishlist,
+      }}
+    >
       {children}
     </ProductContext.Provider>
   );
 }
-
-
-export default ProductProvider;

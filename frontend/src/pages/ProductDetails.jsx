@@ -3,12 +3,15 @@ import "../styles/ProductDetails.css";
 import products from "../data/products.js";
 import { useContext, useState } from "react";
 import { ProductContext } from "../components/ProductProvider.jsx";
-import Footer from "../components/Footer.jsx" 
+import Footer from "../components/Footer.jsx";
+import { FaRegHeart, FaHeart } from "react-icons/fa";
 
 function ProductDetails() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const { addToCart } = useContext(ProductContext);
+
+  // get addToCart & wishlist/toggleWishlist from context
+  const { addToCart, wishlist, toggleWishlist } = useContext(ProductContext);
 
   const [showPopup, setShowPopup] = useState(false);
 
@@ -18,6 +21,9 @@ function ProductDetails() {
   if (!product) {
     return <h2>Product not found</h2>;
   }
+
+  // check if product is in wishlist
+  const isInWishlist = wishlist.some((item) => item.id === product.id);
 
   const rating = 4;
   const totalStars = 5;
@@ -31,50 +37,64 @@ function ProductDetails() {
     setTimeout(() => setShowPopup(false), 2000);
   };
 
+  const handleWishlistClick = () => {
+    toggleWishlist(product);
+  };
+
   return (
     <>
-    <div className="product-detail">
-      <img
-        src={product.image}
-        alt={`Image of ${product.name}`}
-        className="product-detail-image"
-        />
-      
-      <div className="product-content">
-        {/* Popup */}
-        {showPopup && (
-          <div className="cart-popup">
-          ✅ Item added to cart!
+      <div className="product-detail">
+        <div className="img_icons">
+          {/* Heart icon */}
+          <div
+            onClick={handleWishlistClick}
+            style={{ cursor: "pointer", display: "inline-block" }}
+          >
+            {isInWishlist ? (
+              <FaHeart className="watchList_icon_unchoose" size={20} color="#ff6600" />
+            ) : (
+              <FaRegHeart className="watchList_icon_unchoose" size={20} />
+            )}
+          </div>
+
+          <img
+            src={product.image}
+            alt={`Image of ${product.name}`}
+            className="product-detail-image"
+          />
         </div>
-      )}
 
-        <h2>{product.name}</h2>
-        <p>
-          <strong>Price:</strong> ₹ {product.price}
-        </p>
-        <p className="stars">{stars}</p>
+        <div className="product-content">
+          {/* Popup */}
+          {showPopup && (
+            <div className="cart-popup">✅ Item added to cart!</div>
+          )}
 
-        <p>
-          <strong>Description:</strong>{" "}
-          {product.description || "No description available."}
-        </p>
+          <h2>{product.name}</h2>
+          <p>
+            <strong>Price:</strong> ₹ {product.price}
+          </p>
+          <p className="stars">{stars}</p>
 
-        <div className="button-group">
-          <button className="add-to-cart-btn" onClick={handleAddToCart}>
-            Add to Cart
+          <p>
+            <strong>Description:</strong>{" "}
+            {product.description || "No description available."}
+          </p>
+
+          <div className="button-group">
+            <button className="add-to-cart-btn" onClick={handleAddToCart}>
+              Add to Cart
+            </button>
+            <button className="buy-btn">Buy Now</button>
+          </div>
+
+          <button className="back-btn" onClick={() => navigate("/home")}>
+            ← Back to Home
           </button>
-          <button className="buy-btn">Buy Now</button>
         </div>
-
-        <button className="back-btn" onClick={() => navigate("/home")}>
-          ← Back to Home
-        </button>
       </div>
-
-
-    </div>
-    <Footer  />
-      </>
+      <Footer />
+    </>
   );
 }
 

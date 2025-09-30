@@ -3,7 +3,8 @@ import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-const apiUrl = import.meta.env.VITE_API_URL;
+const apiUrl = "https://menswear-backend1.onrender.com";
+
 
 export default function Register() {
   const [username, setUsername] = useState("");

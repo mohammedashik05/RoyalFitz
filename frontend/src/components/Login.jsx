@@ -5,8 +5,9 @@ import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+const apiUrl = "https://menswear-backend1.onrender.com";
 
-const apiUrl =  import.meta.env.VITE_URL;
+
 console.log(apiUrl)
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -39,8 +40,8 @@ export default function Login() {
         alert("Login successful ✅");
 
         // ✅ redirect to main home page after login
-        navigate("/Home");
-         window.location.reload(); // refresh to apply auth state
+        navigate("/home");
+        //  window.location.reload(); // refresh to apply auth state
       } else {
         alert(response.data.message || "Login failed");
       }

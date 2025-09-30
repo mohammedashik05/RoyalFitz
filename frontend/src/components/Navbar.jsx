@@ -1,15 +1,13 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { FaShoppingCart, FaBars, FaTimes } from "react-icons/fa";
+import { Link, useNavigate } from "react-router-dom";
+import { FaShoppingCart, FaBars, FaTimes, FaHeart, FaRegHeart } from "react-icons/fa";
 import "../styles/Navbar.css";
-import { useNavigate } from "react-router-dom";
 
-
-const Navbar = ({ cartCount = 0 }) => {
+const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
-  const navigate =useNavigate();
+  const navigate = useNavigate();
 
   const toggleMenu = () => setIsOpen(!isOpen);
 
@@ -25,21 +23,14 @@ const Navbar = ({ cartCount = 0 }) => {
         setIsOpen(false);
       }
     };
-
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
 
-
   const handleLogout = () => {
-    // 1. Remove token (if stored)
-    localStorage.removeItem("token");  
-    sessionStorage.removeItem("token"); // if using sessionStorage
-
-    // 2. Optionally clear user data
+    localStorage.removeItem("token");
+    sessionStorage.removeItem("token");
     localStorage.removeItem("user");
-
-    // 3. Redirect to login page
     navigate("/");
   };
 
@@ -56,54 +47,54 @@ const Navbar = ({ cartCount = 0 }) => {
           className={`navbar__links ${isOpen ? "active" : ""}`}
           ref={menuRef}
         >
-          <li>
-            <Link to="/Home" onClick={() => setIsOpen(false)}>Home</Link>
-          </li>
-          <li>
-            <Link to="/shop" onClick={() => setIsOpen(false)}>Shop</Link>
-          </li>
-          <li>
-            <Link to="/cart" onClick={() => setIsOpen(false)}>Cart</Link>
-          </li>
-          <li>
-            <Link to="/about" onClick={() => setIsOpen(false)}>About</Link>
-          </li>
-           <li>
-            <Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link>
-          </li>
+          <li><Link to="/home" onClick={() => setIsOpen(false)}>Home</Link></li>
+          <li><Link to="/shop" onClick={() => setIsOpen(false)}>Shop</Link></li>
+          <li><Link to="/cart" onClick={() => setIsOpen(false)}>Cart</Link></li>
+          <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
+          <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
         </ul>
-         
 
-        {/* Icons container (Toggle + Cart) */}
+        {/* Icons */}
         <div className="navbar__icons">
-          <div>
-          <button className="navbar_logout" onClick={()=>{handleLogout()
-            }}  >LogOut</button>
-             
-        </div>
+          <button className="navbar_logout" onClick={handleLogout}>LogOut</button>
+
           <button
             className="navbar__toggle"
             onClick={toggleMenu}
             ref={toggleRef}
             aria-label="Toggle menu"
           >
-            {isOpen ? <FaTimes size={22} /> : <FaBars size={22} />}
+            {isOpen ? <FaTimes className="menu_close_icon" size={15} /> : <FaBars className="menu_open_icon" size={15} />}
           </button>
 
-
+          {/* Cart Icon */}
           <Link to="/cart" className="cart-icon-wrapper">
-            <FaShoppingCart size={22} />
+            <FaShoppingCart className="cart_icon" />
             {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
           </Link>
+
+          {/* Wishlist Icon */}
+          <Link to="/wishListPage" className="wishlist-link">
+            {wishlistCount > 0 ? (
+              <FaHeart className="wishlist_icon filled" />
+            ) : (
+              <FaRegHeart className="wishlist_icon" />
+            )}
+            {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
+          </Link>
+
         </div>
-       
       </nav>
 
       {/* Overlay */}
-      {isOpen && <div className="navbar__overlay" onClick={() => setIsOpen(false)}></div>}
+      {isOpen && (
+        <div
+          className="navbar__overlay"
+          onClick={() => setIsOpen(false)}
+        ></div>
+      )}
     </>
   );
 };
 
 export default Navbar;
-

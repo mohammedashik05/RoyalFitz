@@ -1,7 +1,9 @@
 import "../styles/ProductCard.css";
 import { useNavigate } from "react-router-dom";
 
+
 function ProductCard({ product }) {
+    // const [liked, setLiked] = useState(false);
     const navigate = useNavigate();
 
     const handleClick = () => {
@@ -22,6 +24,7 @@ function ProductCard({ product }) {
             role="button"
             onKeyDown={(e) => e.key === "Enter" && handleClick()}
         >
+           
             <img
                 src={product.image}
                 alt={`Image of ${product.name}`}
