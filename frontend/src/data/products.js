@@ -1208,7 +1208,7 @@ image: "/assets/product_image/suit/suit (13).jpeg",
     rating: 4.2,
     description:
       "T-shirt Model 1 is made from soft cotton fabric, offering everyday comfort and breathability.",
-    image: "/assets/product_image/tshirt.jpg",
+    image: "/assets/product_image/tshirt/tshirt2.jpeg",
   },
   {
     id: 122,

@@ -19,7 +19,7 @@ function getItemsPerPage() {
     const width = window.innerWidth;
     if (width <= 600) return 5;            // Mobile
     if (width <= 1024) return 9;           // Tablet
-    return 15;                             // Desktop
+    return 25;                             // Desktop
 }
 
 function Home() {

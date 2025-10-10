@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { FaShoppingCart, FaBars, FaTimes, FaHeart, FaRegHeart } from "react-icons/fa";
+import { FaShoppingCart, FaBars, FaTimes, FaHeart, FaRegHeart,FaCrown } from "react-icons/fa";
 import "../styles/Navbar.css";
 
 const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
@@ -39,7 +39,10 @@ const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
       <nav className="navbar">
         {/* Logo */}
         <div className="navbar__logo">
-          <Link to="/">Mens<span className="highlight">Wear</span></Link>
+          {/* <Link to="/">Kings<span className="highlight">Man<FaCrown className="crown-logo" size={22} color="#000000ff" />
+
+  </span></Link> */}
+         <Link to={"/home"}>Royal<span  className="highlight" >Fitz</span> </Link>
         </div>
 
         {/* Desktop Nav Links */}

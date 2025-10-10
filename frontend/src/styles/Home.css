@@ -16,26 +16,28 @@
   display: grid;
   gap: 1rem;
   grid-template-columns: repeat(1, 1fr); /* Mobile default */
-  
+ max-height: 180vh; /* 4 rows height — adjust the 350px based on your card height */
+  overflow-y: 120%;
 }
 
 @media screen and (min-width: 600px) {
   .product-grid {
-    grid-template-columns: repeat(2, 1fr); /* Small tablets */
+    grid-template-columns: repeat(2, 1fr);
   }
 }
 
 @media screen and (min-width: 768px) {
   .product-grid {
-    grid-template-columns: repeat(3, 1fr); /* Tablets */
+    grid-template-columns: repeat(3, 1fr);
   }
 }
 
 @media screen and (min-width: 1024px) {
   .product-grid {
-    grid-template-columns: repeat(5, 1fr); /* Desktop */
+    grid-template-columns: repeat(5, 1fr);
   }
 }
+
 
 .pagination {
     display: flex;
@@ -103,3 +105,4 @@
     transform: translateX(-100%);
   }
 }
+

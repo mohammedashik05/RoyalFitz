@@ -206,7 +206,8 @@
 /* Tablets */
 @media (max-width: 768px) {
   .cart_icon,
-  .wishlist_icon {
+  .wishlist_icon,
+  .crown-logo {
     font-size: 16px;
   }
 
@@ -219,7 +220,8 @@
 /* Mobile phones */
 @media (max-width: 480px) {
   .cart_icon,
-  .wishlist_icon {
+  .wishlist_icon,
+   .crown-logo{
     font-size: 14px; /* smaller on small screens */
   }
 
@@ -232,7 +234,8 @@
 /* Large desktop */
 @media (min-width: 1200px) {
   .cart_icon,
-  .wishlist_icon {
+  .wishlist_icon ,
+  .crown-logo{
     font-size: 20px; /* bigger on very large screens */
   }
 }

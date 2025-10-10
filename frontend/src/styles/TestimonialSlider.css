@@ -10,7 +10,6 @@ body {
   align-items: center;
   padding: 50px 20px;
   background: #f9f9f9;
-  
 }
 
 .testimonial-section h2 {
@@ -21,7 +20,8 @@ body {
 }
 
 .testimonial-slider {
-  max-width: 700px;
+  max-width: 700px; /* default for desktop */
+  width: 90%; /* responsive width */
   margin: auto;
   position: relative;
 }
@@ -29,11 +29,9 @@ body {
 .testimonial-card {
   background: #fff;
   padding: 20px 0 20px;
-  
   /* border-radius: 12px; */
   box-shadow: 0 2px 12px rgba(0,0,0,0.1);
   text-align: center;
-  /* max-width: 650px; */
   width: fit-content;
 }
 
@@ -49,12 +47,10 @@ body {
   font-style: italic;
   color: #555;
   margin-bottom: 15px;
-  /* slightly narrower so arrows don't overlap text */
-  margin-left: auto;
-  padding: 0%;
-  margin: 0%;
-  margin-right: auto;
   line-height: 1.6;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0%;
 }
 
 .testimonial-card h4 {
@@ -91,26 +87,33 @@ body {
 
 /* Tablet adjustments */
 @media (max-width: 768px) {
+  .testimonial-slider {
+    max-width: 70%; /* responsive */
+    
+  }
   .arrow-btn.prev {
     left: -30px;
   }
-  .arrow-btn {
-    padding: 8px;
-  }
   .arrow-btn.next {
     right: -30px;
+  }
+  .arrow-btn {
+    padding: 8px;
   }
 }
 
 /* Mobile adjustments */
 @media (max-width: 480px) {
   .testimonial-card {
-    padding:10px 0 10px 
+    padding: 10px 0 10px;
   }
   .testimonial-section h2 {
     font-size: 1.5rem;
     width: fit-content;
     flex-wrap: nowrap;
+  }
+  .testimonial-slider {
+    max-width: 95%; /* responsive for very small screens */
   }
   .arrow-btn {
     padding: 8px;
@@ -120,9 +123,5 @@ body {
   }
   .arrow-btn.next {
     right: -20px;
-  }
-  .testimonial-slider {
-    max-width: 300px;
-    margin: auto;
   }
 }

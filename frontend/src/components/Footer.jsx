@@ -17,7 +17,7 @@ const Footer = () => {
         {/* Brand Info */}
         <div className="footer__section">
           <h2 className="footer__logo">
-            Mens<span className="highlight">Wear</span>
+            Royal<span className="highlight">Fitz</span>
           </h2>
           <p>
             Your go-to store for premium men’s fashion. Stylish, comfortable, and made to last.
@@ -28,7 +28,7 @@ const Footer = () => {
         <div className="footer__section">
           <h3>Quick Links</h3>
           <ul>
-            <li><Link to="/">Home</Link></li>
+            <li><Link to="/home">Home</Link></li>
             <li><Link to="/shop">Shop</Link></li>
             <li><Link to="/cart">Cart</Link></li>
             <li><Link to="/about">About</Link></li>
