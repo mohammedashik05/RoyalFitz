@@ -5,7 +5,7 @@ import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 
 const categories = [
-    { title: "Costumes", sub: ["pants", "jumpsuit", "shorts", "top", "shirt", "t-shirt"] },
+    { title: "Costumes", sub: ["suit","shirt","pants", "t-shirt","jumpsuit", "shorts", ] },
     { title: "Accessories", sub: ["watch", "belt", "shoes"] },
     { title: "Others", sub: ["Trunk", "vest"] },
 ];
@@ -114,7 +114,7 @@ export default function Shop() {
                     </div>
                 </main>
             </div>
-            <Footer />
+            {/* <Footer /> */}
         </>
     );
 }

@@ -94,7 +94,6 @@
 .sidebar-toggle {
   display: none;
   position: fixed;
-  top: 74px;
   left: 23px;
   background: #ff6600;
   color: white;

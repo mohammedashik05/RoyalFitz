@@ -7,8 +7,13 @@ function WishlistPage() {
   const { wishlist, addToCart, toggleWishlist } = useContext(ProductContext);
 
   if (wishlist.length === 0) {
-    return <h2 style={{ textAlign: "center", marginTop: "40px" }}>No items in wishlist</h2>;
-  }
+    return (
+    <>
+    <h2 style={{ textAlign: "center", marginTop: "40px" }}>No items in wishlist</h2>;
+    {/* <Footer/> */}
+   
+    </>
+  )}
 
   return (
     <>
@@ -40,7 +45,7 @@ function WishlistPage() {
         ))}
       </div>
     </div>
-    <Footer/>
+    {/* <Footer/> */}
         </>
   );
 }

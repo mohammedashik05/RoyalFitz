@@ -10,6 +10,7 @@ import Register from "./components/Register";
 import ProductDetails from "./pages/ProductDetails";
 import Contact from "./pages/Contact";
 import WishListPage from "./pages/WishListPage";
+import Footer from "./components/Footer";
 function App() {
   const location = useLocation(); // get current route
 
@@ -32,8 +33,8 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/contact" element={<Contact/>}  />
         <Route path="/wishListPage" element={<WishListPage/>} />
-
       </Routes>
+      {/* <Footer/> */}
     </>
   );
 }

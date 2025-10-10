@@ -93,7 +93,7 @@ function ProductDetails() {
           </button>
         </div>
       </div>
-      <Footer />
+      {/* <Footer /> */}
     </>
   );
 }
