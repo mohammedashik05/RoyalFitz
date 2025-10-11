@@ -6,7 +6,7 @@ function Landing() {
     <div className="landing-container">
       {/* Text-based logo */}
       <h1 className="landing-logo">
-        Mens<span>Wear</span>
+        Royal<span>Fitz</span>
       </h1>
 
       <p>Welcome 🚀 Please login or register to continue.</p>
