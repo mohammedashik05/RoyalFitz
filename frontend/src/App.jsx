@@ -11,6 +11,8 @@ import ProductDetails from "./pages/ProductDetails";
 import Contact from "./pages/Contact";
 import WishListPage from "./pages/WishListPage";
 import Footer from "./components/Footer";
+
+
 function App() {
   const location = useLocation(); // get current route
 

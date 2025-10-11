@@ -4,7 +4,8 @@
   padding: 20px;
   flex-wrap: wrap; 
 }
-/* Make cart items scrollable and keep summary fixed */
+
+/* Cart items */
 .cart-items {
   flex: 2;
   background: #fff;
@@ -14,21 +15,6 @@
   max-height: 80vh;
   overflow-y: auto;
 }
-
-.cart-summary {
-  flex: 1;
-  background: #fff;
-  padding: 15px;
-  border-radius: 8px;
-  box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
-  height: fit-content;
-  position: sticky;
-  top: 20px;
-}
-
-/* Rest of your popup, table, and button styles stay as in your CSS */
-
-/* Left side - items */
 
 .cart-item {
   display: flex;
@@ -86,7 +72,7 @@
   cursor: pointer;
 }
 
-/* Right side - summary */
+/* Cart summary on right */
 .cart-summary {
   flex: 1;
   background: #fff;
@@ -94,6 +80,8 @@
   border-radius: 8px;
   box-shadow: 0px 0px 10px rgba(0,0,0,0.2);
   height: fit-content;
+  position: sticky;
+  top: 20px;
 }
 
 .buy-now-btn {
@@ -112,8 +100,6 @@
   background: #e65c00;
 }
 
-
-
 /* Popup overlay */
 .summary-popup {
   position: fixed;
@@ -128,7 +114,6 @@
   z-index: 999;
 }
 
-/* Popup box */
 .summary-content {
   position: relative;
   background: #fff;
@@ -140,52 +125,23 @@
   flex-direction: column;
 }
 
-/* Scroll area for table */
-.summary-scroll {
-  overflow-y: auto;
-  flex: 1;
-  margin-bottom: 10px;
+.address-section {
+  margin-top: 15px;
 }
 
-.summary-table {
-  width: 100%;
-  border-collapse: collapse;
+.address-section textarea {
+  width: 99%;
+  /* padding: 8px; */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  resize: none;
+  font-size: 14px;
 }
 
-.summary-table th,
-.summary-table td {
-  padding: 8px;
-  border-bottom: 1px solid #ddd;
-  text-align: center;
-}
-
-.summary-table thead {
-  background-color: #f4f4f4;
-}
-
-.summary-table tfoot td {
-  font-weight: bold;
-  background-color: #fafafa;
-}
-
-/* Footer for Buy Now button */
 .summary-footer {
   text-align: center;
   padding-top: 10px;
   border-top: 1px solid #ddd;
-}
-
-.buy-now-btn {
-  background-color: #28a745;
-  color: white;
-  padding: 10px 16px;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.buy-now-btn:hover {
-  background-color: #218838;
 }
 
 .close-btn {
@@ -197,97 +153,10 @@
   color: #333;
 }
 
-.view-summary-btn {
-  margin-top: 20px;
-  padding: 10px 16px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  cursor: pointer;
-  border-radius: 4px;
-}
-
-.view-summary-btn:hover {
-  background-color: #0056b3;
-}
-
-/* Make left side scrollable */
+/* Scrollable cart */
 .scrollable-cart {
   max-height: 70vh;
   overflow-y: auto;
-}
-
-/* Address Section */
-.address-section {
-  margin-top: 15px;
-}
-
-.address-section textarea {
-  width: 100%;
-  padding: 8px;
-  border-radius: 5px;
-  border: 1px solid #ccc;
-  resize: none;
-  font-size: 14px;
-}
-
-
-/* ========================= */
-/* 📱 Responsive Styles */
-/* ========================= */
-
-/* Tablet view (max-width 1024px) */
-@media (max-width: 1024px) {
-  .cart-container {
-    flex-direction: column;
-    padding: 10%;
-  }
-
-  .cart-items,
-  .cart-summary {
-    width: 90%;
-  }
-
-  .cart-summary {
-    margin-top: 20px;
-  }
-}
-
-/* Mobile view (max-width 768px) */
-@media (max-width: 768px) {
-
-  .cart-container{
-    padding: 10%;
-  }
-  .cart-item {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .cart-item img {
-    width: 100%;
-    height: auto;
-    margin-bottom: 10px;
-  }
-
-  .quantity-controls {
-    margin-top: 10px;
-  }
-}
-
-/* Extra small screens (max-width 480px) */
-@media (max-width: 480px) {
-  .summary-popup {
-    width: 100%;
-  }
-  .item-name {
-    font-size: 14px;
-  }
-
-  .buy-now-btn {
-    font-size: 14px;
-    padding: 8px;
-  }
 }
 
 /* Overlay with blur + fade-in */
@@ -305,7 +174,7 @@
   opacity: 0;
   transition: opacity 0.5s ease, backdrop-filter 0.5s ease, background 0.5s ease;
   z-index: 2000;
-  padding: 1rem; /* Add padding for smaller devices */
+  padding: 1rem;
   box-sizing: border-box;
 }
 
@@ -315,18 +184,16 @@
   opacity: 1;
 }
 
-/* Small centered animation box with zoom effect */
 .order-animation-box {
   width: 90%;
-  max-width: 400px; /* Scales on large screens */
-  aspect-ratio: 1 / 1; /* Keeps square shape */
+  max-width: 400px;
+  aspect-ratio: 1 / 1;
   display: flex;
   justify-content: center;
   align-items: center;
   border-radius: 12px;
   transform: scale(0.8);
   transition: transform 0.5s ease;
-  /* background: rgba(255, 255, 255, 0.9); optional, uncomment if needed */
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -335,11 +202,61 @@
   transform: scale(1);
 }
 
-/* Optional: Responsive text or animation inside box */
-.order-animation-box lottie-player,
-.order-animation-box img,
-.order-animation-box svg {
-  width: 80%;
-  height: auto;
-  max-height: 80%;
+/* Responsive */
+@media (max-width: 1024px) {
+  .cart-container {
+    flex-direction: column;
+    padding: 10%;
+  }
+
+  .cart-items,
+  .cart-summary {
+    width: 90%;
+  }
+
+  .cart-summary {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cart-container {
+    padding: 10%;
+  }
+  .cart-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .summary-content{
+    width: 80%;
+    font-size: 0.9rem;
+  }
+
+  .cart-item img {
+    width: 100%;
+    height: auto;
+    margin-bottom: 10px;
+  }
+
+  .quantity-controls {
+    margin-top: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .summary-popup {
+    width: 100%;
+  }
+  .summary-content{
+    width: 80%;
+    font-size: 0.7rem;
+  }
+  .item-name {
+    font-size: 14px;
+  }
+
+  .buy-now-btn {
+    font-size: 14px;
+    padding: 8px;
+  }
 }

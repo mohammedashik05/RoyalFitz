@@ -1,0 +1,27 @@
+.summary-scroll {
+    
+  overflow-y: auto;
+  flex: 1;
+  margin-bottom: 10px;
+}
+
+.summary-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.summary-table th,
+.summary-table td {
+  padding: 8px;
+  border-bottom: 1px solid #ddd;
+  text-align: center;
+}
+
+.summary-table thead {
+  background-color: #f4f4f4;
+}
+
+.summary-table tfoot td {
+  font-weight: bold;
+  background-color: #fafafa;
+}

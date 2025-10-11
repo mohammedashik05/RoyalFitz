@@ -3,7 +3,7 @@ import { ProductContext } from "../components/ProductProvider.jsx";
 import "../styles/Cart.css";
 import orderAnimation from "../animation/order_placed.json";
 import Lottie from "lottie-react";
-import Footer from "../components/Footer.jsx";
+import CartSummaryTable from "../components/CartSummaryTable.jsx";
 
 function Cart() {
   const {
@@ -32,13 +32,11 @@ function Cart() {
       return;
     }
 
-    // Show order animation
     setOrderPlaced(true);
     setShowSummary(false);
     setAddress("");
     clearCart();
 
-    // Hide animation after 5 seconds
     setTimeout(() => {
       setOrderPlaced(false);
     }, 5000);
@@ -87,13 +85,10 @@ function Cart() {
           <p>Total Price: ₹{totalPrice.toFixed(2)}</p>
           <p>Discount (10%): -₹{discount.toFixed(2)}</p>
           <h3>Final Total: ₹{finalTotal.toFixed(2)}</h3>
-          <button className="buy-now-btn">Buy Now</button>
+
           {cartItems.length > 0 && (
-            <button
-              className="view-summary-btn"
-              onClick={() => setShowSummary(true)}
-            >
-              View Detailed Summary
+            <button className="buy-now-btn" onClick={() => setShowSummary(true)}>
+              Buy Now
             </button>
           )}
         </div>
@@ -106,46 +101,15 @@ function Cart() {
                 ✖
               </span>
               <h2>Detailed Cart Summary</h2>
-              <div className="summary-scroll">
-                <table className="summary-table">
-                  <thead>
-                    <tr>
-                      <th>Product</th>
-                      <th>Qty</th>
-                      <th>Price</th>
-                      <th>Subtotal</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {cartItems.map((item) => (
-                      <tr key={item.id}>
-                        <td>{item.name}</td>
-                        <td>{item.quantity}</td>
-                        <td>₹{item.price}</td>
-                        <td>₹{(item.price * item.quantity).toFixed(2)}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr>
-                      <td colSpan="3">Total Quantity</td>
-                      <td>{totalItems}</td>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">Total Price</td>
-                      <td>₹{totalPrice.toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">Discount (10%)</td>
-                      <td>-₹{discount.toFixed(2)}</td>
-                    </tr>
-                    <tr>
-                      <td colSpan="3">Final Total</td>
-                      <td>₹{finalTotal.toFixed(2)}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
+
+              {/* ✅ Reusable Component */}
+              <CartSummaryTable
+                items={cartItems}
+                totalItems={totalItems}
+                totalPrice={totalPrice}
+                discount={discount}
+                finalTotal={finalTotal}
+              />
 
               {/* Address Input */}
               <div className="address-section">
@@ -169,15 +133,13 @@ function Cart() {
 
         {/* Order placed animation overlay */}
         {orderPlaced && (
-          <div className={`order-animation-overlay show`}>
+          <div className="order-animation-overlay show">
             <div className="order-animation-box">
               <Lottie animationData={orderAnimation} loop={false} />
             </div>
           </div>
         )}
       </div>
-
-      {/* <Footer /> */}
     </>
   );
 }
