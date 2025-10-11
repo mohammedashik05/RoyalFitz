@@ -88,8 +88,8 @@ function ProductDetails() {
             <button className="buy-btn">Buy Now</button>
           </div>
 
-          <button className="back-btn" onClick={() => navigate("/home")}>
-            ← Back to Home
+          <button className="back-btn" onClick={() => navigate("/shop")}>
+            ← Back to Shop
           </button>
         </div>
       </div>

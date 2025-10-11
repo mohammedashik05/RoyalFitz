@@ -1,4 +1,5 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect  } from "react";
+import { useParams, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import "../styles/Home.css";
 import products from "../data/products.js";
@@ -27,7 +28,8 @@ function Home() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
   const [shuffledProducts, setShuffledProducts] = useState(shuffleArray(products));
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     function handleResize() {
       setItemsPerPage(getItemsPerPage());
@@ -58,7 +60,7 @@ function Home() {
           </p>
           </div>
           <div className="hero-buttons">
-            <button className="btn-shop">Shop Now</button>
+            <button className="btn-shop" onClick={() => navigate("/shop")}  >Shop Now</button>
             <button className="btn-learn">Learn More</button>
           </div>
         </div>
