@@ -180,12 +180,14 @@
 .cart_icon,
 .wishlist_icon {
   font-size: 18px; /* base size */
-  transition: font-size 0.3s ease;
+  transition: font-size 0.5s ease;
+  color: #333;
   /* color: #ff6600; */
   }
+.cart_icon :hover ,
 .wishlist_icon :hover {
   font-size: 18px; /* base size */
-  transition: font-size 0.3s ease;
+  transition: font-size 1.5s ease;
   color: #ff6600;
   }
 /* Small badge on heart */
