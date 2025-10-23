@@ -25,11 +25,8 @@
 }
 
 .product-content h2 {
-  margin-top: 70px;
+  padding-top: 20px;
   font-size: 2rem;
-}
-.product-content p{
-  padding: 10px 0px;
 }
 
 .product-content .stars {
@@ -38,7 +35,6 @@
 }
 
 .button-group {
-  margin-top: 10px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
