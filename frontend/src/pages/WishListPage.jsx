@@ -27,9 +27,14 @@ function WishlistPage() {
               <h3>{item.name}</h3>
               <p className="wishlist-price">₹ {item.price}</p>
               <div className="wishlist-buttons">
+      
                 <button
                   className="add-to-cart-btn"
-                  onClick={() => addToCart(item)}
+                  onClick={() => 
+                    {
+                      // console.log(item.productId);
+                      addToCart(item)}
+                    }
                   >
                   Add to Cart
                 </button>

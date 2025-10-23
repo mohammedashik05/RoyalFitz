@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/Shop.css";
-import products from "../data/products";
+// import products from "../data/products";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
-
+import {ProductContext} from "../components/ProductProvider.jsx";
 const categories = [
     { title: "Costumes", sub: ["suit","shirt","pants", "t-shirt","jumpsuit", "shorts", ] },
     { title: "Accessories", sub: ["watch", "belt", "shoes"] },
@@ -11,6 +11,7 @@ const categories = [
 ];
 
 export default function Shop() {
+    const {products}=useContext(ProductContext);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [openCategories, setOpenCategories] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);

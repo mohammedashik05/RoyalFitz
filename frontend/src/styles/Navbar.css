@@ -106,9 +106,9 @@
 @media (max-width: 768px) {
   .navbar__links {
     position: fixed;
-    top: 61px;
+    top: 69px;
     right: 0;
-    height: 35vh;
+    height: fit-content;
     background-color: #fff;
     flex-direction: column;
     width: 200px;

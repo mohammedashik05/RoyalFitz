@@ -1,11 +1,15 @@
 import React, { useContext, useState } from "react";
 import { ProductContext } from "../components/ProductProvider.jsx";
 import "../styles/Cart.css";
-import orderAnimation from "../animation/order_placed.json";
-import Lottie from "lottie-react";
+
 import CartSummaryTable from "../components/CartSummaryTable.jsx";
 
 function Cart() {
+
+  const [showSummary, setShowSummary] = useState(false);
+    const [address, setAddress] = useState("");
+    
+    const [orderPlaced, setOrderPlaced] = useState(false);
   const {
     cartItems,
     incrementQuantity,
@@ -14,9 +18,7 @@ function Cart() {
     clearCart,
   } = useContext(ProductContext);
 
-  const [showSummary, setShowSummary] = useState(false);
-  const [address, setAddress] = useState("");
-  const [orderPlaced, setOrderPlaced] = useState(false);
+
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const totalPrice = cartItems.reduce(
@@ -26,21 +28,7 @@ function Cart() {
   const discount = totalPrice * 0.1;
   const finalTotal = totalPrice - discount;
 
-  const handleCheckout = () => {
-    if (!address.trim()) {
-      alert("Please enter your shipping address before proceeding.");
-      return;
-    }
 
-    setOrderPlaced(true);
-    setShowSummary(false);
-    setAddress("");
-    clearCart();
-
-    setTimeout(() => {
-      setOrderPlaced(false);
-    }, 5000);
-  };
 
   return (
     <>
@@ -60,7 +48,11 @@ function Cart() {
                   <div className="quantity-controls">
                     <button onClick={() => decrementQuantity(item.id)}>-</button>
                     <span>{item.quantity}</span>
-                    <button onClick={() => incrementQuantity(item.id)}>+</button>
+                    <button onClick={() => 
+                    {incrementQuantity(item.id)
+                      // console.log(item)
+                    }
+                    }>+</button>
                   </div>
                   <button
                     className="remove-btn"
@@ -87,7 +79,7 @@ function Cart() {
           <h3>Final Total: ₹{finalTotal.toFixed(2)}</h3>
 
           {cartItems.length > 0 && (
-            <button className="buy-now-btn" onClick={() => setShowSummary(true)}>
+            <button className="buy-now-btn" onClick={() => {setShowSummary(true)}}>
               Buy Now
             </button>
           )}
@@ -110,35 +102,11 @@ function Cart() {
                 discount={discount}
                 finalTotal={finalTotal}
               />
-
-              {/* Address Input */}
-              <div className="address-section">
-                <h3>Shipping Address</h3>
-                <textarea
-                  placeholder="Enter your delivery address..."
-                  value={address}
-                  onChange={(e) => setAddress(e.target.value)}
-                  rows="3"
-                />
-              </div>
-
-              <div className="summary-footer">
-                <button className="buy-now-btn" onClick={handleCheckout}>
-                  Proceed to Checkout
-                </button>
-              </div>
             </div>
           </div>
         )}
 
-        {/* Order placed animation overlay */}
-        {orderPlaced && (
-          <div className="order-animation-overlay show">
-            <div className="order-animation-box">
-              <Lottie animationData={orderAnimation} loop={false} />
-            </div>
-          </div>
-        )}
+       
       </div>
     </>
   );

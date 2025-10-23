@@ -1,7 +1,8 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect,useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { FaShoppingCart, FaBars, FaTimes, FaHeart, FaRegHeart,FaCrown } from "react-icons/fa";
 import "../styles/Navbar.css";
+import { ProductContext } from "../components/ProductProvider.jsx";
 
 const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -10,6 +11,23 @@ const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
   const navigate = useNavigate();
 
   const toggleMenu = () => setIsOpen(!isOpen);
+
+  const [admin, setAdmin] = useState(false);
+    const { verifyAdmin } = useContext(ProductContext);
+  
+    useEffect(() => {
+      const checkAdmin = async () => {
+        try {
+          const result = await verifyAdmin(); // ✅ Await async call
+          setAdmin(result.isAdmin);           // backend returns { isAdmin: true/false }
+        } catch (err) {
+          console.error("Error verifying admin:", err);
+          setAdmin(false);
+        } 
+      };
+  
+      checkAdmin();
+    }, [verifyAdmin]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -52,7 +70,10 @@ const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
         >
           <li><Link to="/home" onClick={() => setIsOpen(false)}>Home</Link></li>
           <li><Link to="/shop" onClick={() => setIsOpen(false)}>Shop</Link></li>
-          <li><Link to="/cart" onClick={() => setIsOpen(false)}>Cart</Link></li>
+         { (admin)? <li><Link to="/adminDashBoard" onClick={() => setIsOpen(false)}>Order's</Link></li>
+          : <li><Link to="/cart" onClick={() => setIsOpen(false)}>Cart</Link></li>
+         }
+
           <li><Link to="/about" onClick={() => setIsOpen(false)}>About</Link></li>
           <li><Link to="/contact" onClick={() => setIsOpen(false)}>Contact</Link></li>
         </ul>

@@ -25,8 +25,11 @@
 }
 
 .product-content h2 {
-  padding-top: 20px;
+  margin-top: 70px;
   font-size: 2rem;
+}
+.product-content p{
+  padding: 10px 0px;
 }
 
 .product-content .stars {
@@ -35,6 +38,7 @@
 }
 
 .button-group {
+  margin-top: 10px;
   display: flex;
   gap: 10px;
   flex-wrap: wrap;
@@ -94,6 +98,13 @@
 }
 
 .watchList_icon_unchoose {
+  position: relative;
+  top: 50px;
+  left: 87%;
+  color: #ff6600;
+}
+
+.watchList_icon_choose {
   position: relative;
   top: 50px;
   left: 87%;

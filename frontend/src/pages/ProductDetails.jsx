@@ -5,8 +5,6 @@ import products from "../data/products.js";
 import { useContext, useState } from "react";
 import { ProductContext } from "../components/ProductProvider.jsx";
 import CartSummaryTable from "../components/CartSummaryTable.jsx";
-import Lottie from "lottie-react";
-import orderAnimation from "../animation/order_placed.json";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 
 function ProductDetails() {
@@ -22,13 +20,15 @@ function ProductDetails() {
   const product = products.find((p) => p.id.toString() === id);
   if (!product) return <h2>Product not found</h2>;
 
-  const isInWishlist = wishlist.some((item) => item.id === product.id);
+  let isInWishlist = wishlist.some((item) => item.id === product.id);
 
   const rating = 4;
   const totalStars = 5;
   const stars = "★".repeat(rating) + "☆".repeat(totalStars - rating);
 
   const handleAddToCart = () => {
+
+
     addToCart(product);
     setShowCartPopup(true);
     setTimeout(() => setShowCartPopup(false), 2000);
@@ -75,11 +75,21 @@ function ProductDetails() {
             style={{ cursor: "pointer", display: "inline-block" }}
           >
             {isInWishlist ? (
-              <FaHeart className="watchList_icon_unchoose" size={20} color="#ff6600" />
+              <FaHeart
+                size={20}
+                className="watchList_icon_unchoose"
+                color="#ff6600" // filled heart color
+              />
             ) : (
-              <FaRegHeart className="watchList_icon_unchoose" size={20} />
+              <FaRegHeart
+                size={20}
+                className="watchList_icon_choose"
+                color="#ff6600" // outlined heart color
+              />
             )}
           </div>
+
+
 
           <img
             src={product.image}
@@ -133,36 +143,14 @@ function ProductDetails() {
               totalPrice={totalPrice}
               discount={discount}
               finalTotal={finalTotal}
+              id={id}
             />
 
-            {/* Shipping address */}
-            <div className="address-section">
-              <h3>Shipping Address</h3>
-              <textarea
-                placeholder="Enter your delivery address..."
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                rows="3"
-              />
-            </div>
-
-            <div className="summary-footer">
-              <button className="buy-now-btn" onClick={handleCheckout}>
-                Proceed to Checkout
-              </button>
-            </div>
           </div>
         </div>
       )}
 
-      {/* Order placed animation */}
-      {orderPlaced && (
-        <div className="order-animation-overlay show">
-          <div className="order-animation-box">
-            <Lottie animationData={orderAnimation} loop={false} />
-          </div>
-        </div>
-      )}
+
     </>
   );
 }

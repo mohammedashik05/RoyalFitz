@@ -1,5 +1,6 @@
 import "../styles/ProductCard.css";
 import { useNavigate } from "react-router-dom";
+import {ProductContext} from "../components/ProductProvider.jsx";
 
 
 function ProductCard({ product }) {

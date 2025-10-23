@@ -1,8 +1,9 @@
 .summary-scroll {
     
-  overflow-y: auto;
+  /* overflow-y: auto; */
   flex: 1;
   margin-bottom: 10px;
+  height: 100%;
 }
 
 .summary-table {
@@ -24,4 +25,57 @@
 .summary-table tfoot td {
   font-weight: bold;
   background-color: #fafafa;
+}
+
+
+
+/* ✅ Responsive Order Success Text */
+.order-success-text {
+  margin-top: 1rem;
+  text-align: center;
+  font-weight: 700;
+  color: #0b6b3a;
+  background: linear-gradient(90deg, #0b6b3a, #12a05b);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+  font-size: 1.25rem; /* mobile base */
+  padding: 0 0.5rem;
+  word-break: keep-all;
+  white-space: pre-wrap;
+}
+
+/* Tablet */
+@media (min-width: 600px) {
+  .order-success-text {
+    font-size: 1.75rem;
+    letter-spacing: -0.6px;
+  }
+}
+
+/* Desktop */
+@media (min-width: 1024px) {
+  .order-success-text {
+    font-size: 2.25rem;
+    letter-spacing: -0.8px;
+  }
+}
+
+/* High contrast support */
+@media (forced-colors: active) {
+  .order-success-text {
+    color: Highlight;
+    background: none;
+    -webkit-background-clip: initial;
+  }
+}
+
+/* Reduce motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .order-success-text {
+    transition: none;
+    animation: none;
+  }
 }

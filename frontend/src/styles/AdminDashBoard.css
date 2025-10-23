@@ -1,0 +1,369 @@
+/* ====== Root & Global Styles ====== */
+:root {
+  --primary-color: #ff6600;
+  --bg-light: #f4f4f9;
+  --text-dark: #333;
+  --white: #fff;
+  --shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* ====== Dashboard Container ====== */
+.dashboard-container {
+  padding: 1.5rem;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: var(--bg-light);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* ====== Title ====== */
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  color: var(--text-dark);
+  font-weight: 700;
+  margin-bottom: 1rem;
+  letter-spacing: 0.5px;
+}
+
+/* ====== Table Container ====== */
+.table-container {
+  width: 100%;
+  overflow-x: auto;
+  background-color: var(--white);
+  border-radius: 10px;
+  box-shadow: var(--shadow);
+  padding: 1rem;
+}
+
+/* ====== Table Styling ====== */
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 650px; /* ensures table looks proper on wide screens */
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  font-size: 0.95rem;
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.orders-table th {
+  background-color: var(--primary-color);
+  color: var(--white);
+  font-weight: 600;
+  letter-spacing: 0.4px;
+}
+
+.orders-table tbody tr:hover {
+  background-color: #fafafa;
+  transition: background 0.3s ease;
+}
+
+/* ====== Status Badge ====== */
+.status {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background-color: #ffeccc;
+  color: #d68a00;
+}
+
+.status.delivered {
+  background-color: #d7f8d7;
+  color: #2e7d32;
+}
+
+.status.cancelled {
+  background-color: #ffd6d6;
+  color: #c62828;
+}
+
+/* ====== Responsive Layout ====== */
+
+/* Medium Devices (Tablets) */
+@media screen and (max-width: 1024px) {
+  .dashboard-container {
+    padding: 1.2rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.75rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+}
+
+/* Small Devices (Mobiles) */
+@media screen and (max-width: 768px) {
+  .table-container {
+    padding: 0.5rem;
+  }
+
+  
+
+  .orders-table th {
+    font-size: 0.7rem;
+  }
+
+  /* .orders-table tbody tr {
+    background: var(--white);
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+    padding: 0.8rem 1rem;
+    box-shadow: var(--shadow);
+  }  */
+
+  .orders-table tbody td {
+    padding: 0.6rem 10px;
+    font-size: 0.7rem;
+    border: none;
+  }
+
+  /* .orders-table tbody td::before {
+    content: attr(data-label);
+    font-weight: 600;
+    color: #555;
+    flex-basis: 50%;
+    text-align: left;
+  } */
+}
+
+/* Extra Small Devices (under 480px) */
+@media screen and (max-width: 480px) {
+  .dashboard-title {
+    font-size: 1.4rem;
+  }
+
+  .orders-table tbody td {
+    font-size: 0.66rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orders-table tbody td::before {
+    margin-bottom: 0.2rem;
+  }
+}
+
+
+
+/* ===== Popup Overlay ===== */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+/* ===== Popup Box ===== */
+.popup-content {
+  background: #fff;
+  width: 90%;
+  max-width: 500px;
+  padding: 25px;
+  border-radius: 10px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  animation: fadeIn 0.3s ease-in-out;
+  overflow-y: auto;
+  max-height: 90vh;
+}
+
+.popup-content h2 {
+  margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: #333;
+  text-align: center;
+}
+
+.popup-details p {
+  margin: 8px 0;
+  font-size: 0.95rem;
+  color: #444;
+}
+
+.popup-details ul {
+  margin-top: 10px;
+  padding-left: 20px;
+  font-size: 0.9rem;
+}
+
+/* ===== Buttons ===== */
+.popup-buttons {
+  margin-top: 20px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.btn-delivered {
+  background-color: #28a745;
+  color: white;
+}
+
+.btn-cancel {
+  background-color: #dc3545;
+  color: white;
+}
+
+.btn-close {
+  background-color: #999;
+  color: white;
+}
+
+.popup-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.popup-buttons button:hover {
+  opacity: 0.9;
+}
+
+/* ===== Animation ===== */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+
+  .popup-content h2{
+    font-size: 1rem;
+  }
+  .popup-content p{
+    font-size: 0.7rem;
+  }
+  .popup-details ul {
+  font-size: 0.7rem;
+}
+  .popup-content {
+    padding: 15px;
+    width: 85%;
+    font-size: 0.9rem;
+  }
+
+  .popup-buttons {
+    flex-direction: column;
+  }
+
+  .popup-buttons button {
+    width: 100%;
+  }
+}
+
+.delivered-animation-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(6px);
+  background: rgba(0, 0, 0, 0.3);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 1rem;
+  box-sizing: border-box;
+  animation: fadeIn 0.3s ease forwards;
+}
+
+.delivered-animation-box {
+  width: 90%;
+  max-width: 500px;
+  aspect-ratio: 1/1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 12px;
+  /* background: rgba(255, 255, 255, 0.9); */
+  padding: 1rem;
+  box-sizing: border-box;
+  animation: zoomIn 0.5s ease forwards;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes zoomIn {
+  0% {
+    transform: scale(0.7);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+/* Responsive Adjustments for Animation Box */
+@media (max-width: 1024px) {
+  .delivered-animation-box {
+    max-width: 450px;
+  }
+}
+
+@media (max-width: 768px) {
+  .delivered-animation-box {
+    max-width: 400px;
+  }
+}
+
+@media (max-width: 480px) {
+  .delivered-animation-box {
+    max-width: 300px;
+  }
+}
+
+@media (max-width: 400px) {
+  .delivered-animation-box {
+    max-width: 250px;
+  }
+}

@@ -5,7 +5,8 @@ import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-const apiUrl = "https://menswear-backend1.onrender.com";
+
+const apiUrl = "http://localhost:5000/api/auth";
 
 
 console.log(apiUrl)
@@ -14,6 +15,8 @@ export default function Login() {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -31,6 +34,7 @@ export default function Login() {
         email,
         password,
       });
+      console.log(response);
 
       if (response.data.success) {
         // ✅ store token & user in localStorage

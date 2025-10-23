@@ -10,6 +10,8 @@ import Register from "./components/Register";
 import ProductDetails from "./pages/ProductDetails";
 import Contact from "./pages/Contact";
 import WishListPage from "./pages/WishListPage";
+import AdminRoute from "./components/AdminRoute";
+import AdminDashboard from "./components/AdminDashBoard";
 import Footer from "./components/Footer";
 
 
@@ -31,10 +33,18 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />} />
-        <Route path="/product/:id" element={<ProductDetails />} /> 
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="*" element={<Navigate to="/" />} />
-        <Route path="/contact" element={<Contact/>}  />
-        <Route path="/wishListPage" element={<WishListPage/>} />
+        <Route path="/contact" element={<Contact />} />
+        <Route path="/wishListPage" element={<WishListPage />} />
+        <Route
+          path="/adminDashboard"
+          element={
+            <AdminRoute>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
       </Routes>
       {/* <Footer/> */}
     </>

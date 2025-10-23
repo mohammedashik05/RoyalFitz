@@ -1,12 +1,13 @@
-import { useState, useEffect  } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
 import "../styles/Home.css";
-import products from "../data/products.js";
 import ProductCard from "../components/ProductCard.jsx";
+import { ProductContext } from "../components/ProductProvider.jsx";
 import Footer from "../components/Footer.jsx";
 import home_animation from "../animation/home.json";
 import Lottie from "lottie-react";
+
 
 function shuffleArray(array) {
   const arr = array.slice();
@@ -25,11 +26,21 @@ function getItemsPerPage() {
 }
 
 function Home() {
+
+  const user = JSON.parse(localStorage.getItem("user"));
+  console.log(user.isAdmin);
+
+  const { products } = useContext(ProductContext);
+  // console.log("Product context:", products);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
   const [shuffledProducts, setShuffledProducts] = useState(shuffleArray(products));
   const navigate = useNavigate();
-  
+
+  useEffect(() => {
+    setShuffledProducts(shuffleArray(products));
+  }, [products]);
+
   useEffect(() => {
     function handleResize() {
       setItemsPerPage(getItemsPerPage());
@@ -54,14 +65,14 @@ function Home() {
         <div className="hero-text">
           <div className="hero-text-content">
 
-          <h1>Discover Unique Collections</h1>
-          <p>
-            Handpicked items curated just for you. Explore trending products, limited editions, and exclusive deals.
-          </p>
+            <h1>Discover Unique Collections</h1>
+            <p>
+              Handpicked items curated just for you. Explore trending products, limited editions, and exclusive deals.
+            </p>
           </div>
           <div className="hero-buttons">
             <button className="btn-shop" onClick={() => navigate("/shop")}  >Shop Now</button>
-            <button className="btn-learn">Learn More</button>
+            <button className="btn-learn" onClick={() => navigate("/about")}  >Learn More</button>
           </div>
         </div>
         <div className="hero-animation">
