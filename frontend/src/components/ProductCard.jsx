@@ -8,7 +8,7 @@ function ProductCard({ product }) {
     const navigate = useNavigate();
 
     const handleClick = () => {
-        navigate(`/product/${product.id}`);
+        navigate(`/product/${product._id}`);
     };
 
     // Convert numeric rating to array of stars

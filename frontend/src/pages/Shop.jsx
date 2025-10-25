@@ -1,21 +1,26 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState ,useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import "../styles/Shop.css";
 // import products from "../data/products";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
-import {ProductContext} from "../components/ProductProvider.jsx";
+import { ProductContext } from "../components/ProductProvider.jsx";
 const categories = [
-    { title: "Costumes", sub: ["suit","shirt","pants", "t-shirt","jumpsuit", "shorts", ] },
-    { title: "Accessories", sub: ["watch", "belt", "shoes"] },
+    { title: "Costumes", sub: ["suit", "shirt", "pants", "tshirt", "jumpsuit", "shorts",] },
+    { title: "Accessories", sub: ["watch", "belt", "shoe"] },
     { title: "Others", sub: ["Trunk", "vest"] },
 ];
 
 export default function Shop() {
-    const {products}=useContext(ProductContext);
+    const { products } = useContext(ProductContext);
     const [selectedCategory, setSelectedCategory] = useState(null);
     const [openCategories, setOpenCategories] = useState([]);
     const [sidebarOpen, setSidebarOpen] = useState(false);
     const [sortOrder, setSortOrder] = useState("-");
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const navigate =useNavigate();
 
     const toggleCategory = (title) => {
         setOpenCategories((prev) =>
@@ -38,6 +43,25 @@ export default function Shop() {
         setSelectedCategory(selectedCategory === category ? null : category);
         if (window.innerWidth <= 768) setSidebarOpen(false); // auto close on mobile
     };
+
+
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) return;
+
+                const res = await axios.get("http://localhost:5000/api/info/verify-admin", {
+                    headers: { Authorization: `Bearer ${token}` },
+                });
+                setIsAdmin(res.data.isAdmin);
+            } catch (err) {
+                console.error("Error verifying admin:", err);
+            }
+        };
+        checkAdmin();
+    }, []);
 
     return (
         <>
@@ -78,6 +102,11 @@ export default function Shop() {
                             )}
                         </div>
                     ))}
+                    {isAdmin && (
+                        <button className="add-product-btn" onClick={() => navigate("/addProductForm")}  >
+                            ➕ Add Product
+                        </button>
+                    )}
                     {/* Close button for mobile */}
                     <button
                         className="close-sidebar"
@@ -85,6 +114,8 @@ export default function Shop() {
                     >
                         ✖ Close
                     </button>
+
+
                 </aside>
                 {/* Overlay for mobile */}
                 {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}

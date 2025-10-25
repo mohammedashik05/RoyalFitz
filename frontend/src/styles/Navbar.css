@@ -55,19 +55,28 @@
   color: #ff6600;
 }
 
+.wishlist-link{
+  position: relative;
+    display: inline-block;
+  color: #333;
+   transition: color 0.3s ease;
+}
+
 
 /* Cart count badge */
-.cart-count {
+.cart-count ,
+.wishlist-count {
   position: absolute;
   top: -6px;
   right: -10px;
-  background: red;
+  background: #ff6600;;
   color: white;
   font-size: 12px;
   font-weight: bold;
   padding: 2px 6px;
   border-radius: 50%;
 }
+
 
 /* Toggle button hidden on desktop */
 .navbar__toggle {
@@ -106,9 +115,9 @@
 @media (max-width: 768px) {
   .navbar__links {
     position: fixed;
-    top: 69px;
+    top: 43px;
     right: 0;
-    height: fit-content;
+    height: 35vh;
     background-color: #fff;
     flex-direction: column;
     width: 200px;
@@ -191,17 +200,6 @@
   color: #ff6600;
   }
 /* Small badge on heart */
-.wishlist-count {
-  position: absolute;
-  top: -6px;
-  right: -10px;
-  background: red;
-  color: white;
-  font-size: 11px;
-  font-weight: bold;
-  padding: 2px 3px;
-  border-radius: 50%;
-}
 
 /* ----- Responsive tweaks ----- */
 

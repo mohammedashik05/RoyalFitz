@@ -75,7 +75,7 @@ function AdminDashboard() {
                 <td data-label="Address">{order.address}</td>
                 <td data-label="Products">
                   {order.cart.map((item) => (
-                    <div key={item.id}>
+                    <div key={item._id}>
                       {item.name} × {item.quantity}
                     </div>
                   ))}
@@ -111,7 +111,7 @@ function AdminDashboard() {
                 <strong>Products:</strong>
                 <ul>
                   {selectedOrder.cart.map((item) => (
-                    <li key={item.id}>
+                    <li key={item._id}>
                       {item.name} × {item.quantity}
                     </li>
                   ))}

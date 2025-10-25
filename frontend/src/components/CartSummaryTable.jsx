@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/CartSummaryTable.css";
 import orderAnimation from "../animation/order_placed.json";
 import Lottie from "lottie-react";
@@ -9,8 +9,6 @@ function CartSummaryTable({ items, totalItems, totalPrice, discount, finalTotal,
   const [mobile, setMobile] = useState("");
   const [address, setAddress] = useState("");
   const [placed, setPlaced] = useState(false);
-  const [cart, setCart] = useState({});
-
 
   const handleCheckout = async () => {
     if (!user) {
@@ -28,10 +26,12 @@ function CartSummaryTable({ items, totalItems, totalPrice, discount, finalTotal,
       alert("Please enter your shipping address.");
       return;
     }
-    let cartData = cartItems; // default
+
+    let cartData = cartItems; // default to user's cart
 
     if (id) {
-      const product = products.find((p) => p.id == id);
+      // For single product checkout
+      const product = products.find((p) => p._id === id);
       if (!product) {
         alert("Product not found");
         return;
@@ -39,7 +39,7 @@ function CartSummaryTable({ items, totalItems, totalPrice, discount, finalTotal,
 
       cartData = [
         {
-          id: product.id,
+          _id: product._id,
           name: product.name,
           price: product.price,
           image: product.image,
@@ -48,11 +48,10 @@ function CartSummaryTable({ items, totalItems, totalPrice, discount, finalTotal,
       ];
     }
 
-
     const orderData = {
       username: user.username,
       email: user.email,
-      address: address,
+      address,
       mobileNo: mobile,
       cart: cartData,
       totalAmount: finalTotal,
@@ -72,83 +71,80 @@ function CartSummaryTable({ items, totalItems, totalPrice, discount, finalTotal,
     }, 5000);
   };
 
-
   return (
-    <>
-      <div className="summary-scroll">
-        <table className="summary-table">
-          <thead>
-            <tr>
-              <th>Product</th>
-              <th>Qty</th>
-              <th>Price</th>
-              <th>Subtotal</th>
+    <div className="summary-scroll">
+      <table className="summary-table">
+        <thead>
+          <tr>
+            <th>Product</th>
+            <th>Qty</th>
+            <th>Price</th>
+            <th>Subtotal</th>
+          </tr>
+        </thead>
+        <tbody>
+          {items.map((item) => (
+            <tr key={item._id}>
+              <td>{item.name}</td>
+              <td>{item.quantity}</td>
+              <td>₹{item.price}</td>
+              <td>₹{(item.price * item.quantity).toFixed(2)}</td>
             </tr>
-          </thead>
-          <tbody>
-            {items.map((item) => (
-              <tr key={item.id}>
-                <td>{item.name}</td>
-                <td>{item.quantity}</td>
-                <td>₹{item.price}</td>
-                <td>₹{(item.price * item.quantity).toFixed(2)}</td>
-              </tr>
-            ))}
-          </tbody>
-          <tfoot>
-            <tr>
-              <td colSpan="3">Total Quantity</td>
-              <td>{totalItems}</td>
-            </tr>
-            <tr>
-              <td colSpan="3">Total Price</td>
-              <td>₹{totalPrice.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td colSpan="3">Discount (10%)</td>
-              <td>-₹{discount.toFixed(2)}</td>
-            </tr>
-            <tr>
-              <td colSpan="3">Final Total</td>
-              <td>₹{finalTotal.toFixed(2)}</td>
-            </tr>
-          </tfoot>
-        </table>
+          ))}
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colSpan="3">Total Quantity</td>
+            <td>{totalItems}</td>
+          </tr>
+          <tr>
+            <td colSpan="3">Total Price</td>
+            <td>₹{totalPrice.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colSpan="3">Discount (10%)</td>
+            <td>-₹{discount.toFixed(2)}</td>
+          </tr>
+          <tr>
+            <td colSpan="3">Final Total</td>
+            <td>₹{finalTotal.toFixed(2)}</td>
+          </tr>
+        </tfoot>
+      </table>
 
-        <div className="address-section">
-          <h3>Shipping Address</h3>
-          <input
-            className="address-number"
-            placeholder="Enter your Mobile No"
-            type="text"
-            value={mobile}
-            onChange={(e) => setMobile(e.target.value)}
-            maxLength={10}
-          />
-          <textarea
-            placeholder="Enter your delivery address..."
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            rows="3"
-          />
-        </div>
-
-        <div className="summary-footer">
-          <button className="buy-now-btn" onClick={handleCheckout}>
-            Proceed to Checkout
-          </button>
-        </div>
-
-        {placed && (
-          <div className="order-animation-overlay show">
-            <div className="order-animation-box">
-              <Lottie animationData={orderAnimation} className="order-animation" loop={false} />
-              <h1 className="order-success-text">Order Placed Successfully!</h1>
-            </div>
-          </div>
-        )}
+      <div className="address-section">
+        <h3>Shipping Address</h3>
+        <input
+          className="address-number"
+          placeholder="Enter your Mobile No"
+          type="text"
+          value={mobile}
+          onChange={(e) => setMobile(e.target.value)}
+          maxLength={10}
+        />
+        <textarea
+          placeholder="Enter your delivery address..."
+          value={address}
+          onChange={(e) => setAddress(e.target.value)}
+          rows="3"
+        />
       </div>
-    </>
+
+      <div className="summary-footer">
+        <button className="buy-now-btn" onClick={handleCheckout}>
+          Proceed to Checkout
+        </button>
+      </div>
+
+      {placed && (
+        <div className="order-animation-overlay show">
+          <div className="order-animation-box">
+            <Lottie animationData={orderAnimation} className="order-animation" loop={false} />
+            <h1 className="order-success-text">Order Placed Successfully!</h1>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

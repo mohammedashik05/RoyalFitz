@@ -109,6 +109,16 @@
   margin-top: 20px;
   width: 100%;
   padding: 10px;
+  background-color: #999;
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.add-product-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 10px;
   background: #ff6600;
   color: #fff;
   border: none;

@@ -21,7 +21,7 @@ function WishlistPage() {
       {/* <h2>My Wishlist</h2> */}
       <div className="wishlist-grid">
         {wishlist.map((item) => (
-          <div className="wishlist-item" key={item.id}>
+          <div className="wishlist-item" key={item.productId}>
             <img src={item.image} alt={item.name} />
             <div className="wishlist-content">
               <h3>{item.name}</h3>

@@ -1,34 +1,34 @@
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/ProductDetails.css";
 import "../styles/Cart.css"; // for popup & summary styles
-import products from "../data/products.js";
 import { useContext, useState } from "react";
 import { ProductContext } from "../components/ProductProvider.jsx";
 import CartSummaryTable from "../components/CartSummaryTable.jsx";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 
 function ProductDetails() {
-  const { id } = useParams();
+  const { _id } = useParams(); // URL param
   const navigate = useNavigate();
-  const { addToCart, wishlist, toggleWishlist } = useContext(ProductContext);
+  const { addToCart, wishlist, toggleWishlist, products } = useContext(ProductContext);
 
-  const [showCartPopup, setShowCartPopup] = useState(false); // Add to cart popup
-  const [showBuyNow, setShowBuyNow] = useState(false); // Buy Now popup
-  const [address, setAddress] = useState("");
+  const [showCartPopup, setShowCartPopup] = useState(false);
+  const [showBuyNow, setShowBuyNow] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
 
-  const product = products.find((p) => p.id.toString() === id);
+  // Find product by _id
+  const product = products.find((p) => p._id === _id);
   if (!product) return <h2>Product not found</h2>;
 
-  let isInWishlist = wishlist.some((item) => item.id === product.id);
+  // console.log(_id);
+  const isInWishlist = wishlist.some((item) => item.productId === _id);
+  // console.log(isInWishlist);
 
-  const rating = 4;
+  // Convert rating to stars (optional)
+  const rating = Math.round(product.rating || 4);
   const totalStars = 5;
   const stars = "★".repeat(rating) + "☆".repeat(totalStars - rating);
 
   const handleAddToCart = () => {
-
-
     addToCart(product);
     setShowCartPopup(true);
     setTimeout(() => setShowCartPopup(false), 2000);
@@ -38,26 +38,16 @@ function ProductDetails() {
     toggleWishlist(product);
   };
 
-  // Buy Now logic
+  // Buy Now popup
   const handleBuyNow = () => {
     setShowBuyNow(true);
   };
 
   const handleCheckout = () => {
-    if (!address.trim()) {
-      alert("Please enter your shipping address before proceeding.");
-      return;
-    }
-
-    // Show order animation
+    // For now, single product checkout logic can be handled inside CartSummaryTable
     setOrderPlaced(true);
     setShowBuyNow(false);
-    setAddress("");
-    addToCart(product); // Optional: add to cart for processing
-
-    setTimeout(() => {
-      setOrderPlaced(false);
-    }, 5000);
+    setTimeout(() => setOrderPlaced(false), 5000);
   };
 
   // Single product summary data
@@ -75,21 +65,11 @@ function ProductDetails() {
             style={{ cursor: "pointer", display: "inline-block" }}
           >
             {isInWishlist ? (
-              <FaHeart
-                size={20}
-                className="watchList_icon_unchoose"
-                color="#ff6600" // filled heart color
-              />
+              <FaHeart size={20} className="watchList_icon_unchoose" color="#ff6600" />
             ) : (
-              <FaRegHeart
-                size={20}
-                className="watchList_icon_choose"
-                color="#ff6600" // outlined heart color
-              />
+              <FaRegHeart size={20} className="watchList_icon_choose" color="#ff6600" />
             )}
           </div>
-
-
 
           <img
             src={product.image}
@@ -99,20 +79,12 @@ function ProductDetails() {
         </div>
 
         <div className="product-content">
-          {/* Add to cart popup */}
-          {showCartPopup && (
-            <div className="cart-popup">✅ Item added to cart!</div>
-          )}
+          {showCartPopup && <div className="cart-popup">✅ Item added to cart!</div>}
 
           <h2>{product.name}</h2>
-          <p>
-            <strong>Price:</strong> ₹ {product.price}
-          </p>
+          <p><strong>Price:</strong> ₹ {product.price}</p>
           <p className="stars">{stars}</p>
-
-          <p>
-            <strong>Description:</strong> {product.description || "No description available."}
-          </p>
+          <p><strong>Description:</strong> {product.description || "No description available."}</p>
 
           <div className="button-group">
             <button className="add-to-cart-btn" onClick={handleAddToCart}>
@@ -136,21 +108,17 @@ function ProductDetails() {
             <span className="close-btn" onClick={() => setShowBuyNow(false)}>✖</span>
             <h2>Order Summary</h2>
 
-            {/* Reusable Table */}
             <CartSummaryTable
-              items={[{ ...product, quantity: 1 }]}
+              items={[{ ...product, quantity: 1, id: product._id }]}
               totalItems={totalItems}
               totalPrice={totalPrice}
               discount={discount}
               finalTotal={finalTotal}
-              id={id}
+              id={product._id}
             />
-
           </div>
         </div>
       )}
-
-
     </>
   );
 }

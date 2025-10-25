@@ -37,7 +37,7 @@
   background-color: var(--white);
   border-radius: 10px;
   box-shadow: var(--shadow);
-  padding: 1rem;
+  /* padding: 1rem; */
 }
 
 /* ====== Table Styling ====== */
@@ -93,76 +93,6 @@
 }
 
 /* ====== Responsive Layout ====== */
-
-/* Medium Devices (Tablets) */
-@media screen and (max-width: 1024px) {
-  .dashboard-container {
-    padding: 1.2rem;
-  }
-
-  .dashboard-title {
-    font-size: 1.75rem;
-  }
-
-  .orders-table th,
-  .orders-table td {
-    font-size: 0.9rem;
-    padding: 0.8rem;
-  }
-}
-
-/* Small Devices (Mobiles) */
-@media screen and (max-width: 768px) {
-  .table-container {
-    padding: 0.5rem;
-  }
-
-  
-
-  .orders-table th {
-    font-size: 0.7rem;
-  }
-
-  /* .orders-table tbody tr {
-    background: var(--white);
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    margin-bottom: 1rem;
-    padding: 0.8rem 1rem;
-    box-shadow: var(--shadow);
-  }  */
-
-  .orders-table tbody td {
-    padding: 0.6rem 10px;
-    font-size: 0.7rem;
-    border: none;
-  }
-
-  /* .orders-table tbody td::before {
-    content: attr(data-label);
-    font-weight: 600;
-    color: #555;
-    flex-basis: 50%;
-    text-align: left;
-  } */
-}
-
-/* Extra Small Devices (under 480px) */
-@media screen and (max-width: 480px) {
-  .dashboard-title {
-    font-size: 1.4rem;
-  }
-
-  .orders-table tbody td {
-    font-size: 0.66rem;
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .orders-table tbody td::before {
-    margin-bottom: 0.2rem;
-  }
-}
 
 
 
@@ -222,6 +152,7 @@
 }
 
 .btn-delivered {
+  font-size: 0.1rem;
   background-color: #28a745;
   color: white;
 }
@@ -251,43 +182,7 @@
 }
 
 /* ===== Animation ===== */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
 
-/* Mobile Responsiveness */
-@media (max-width: 480px) {
-
-  .popup-content h2{
-    font-size: 1rem;
-  }
-  .popup-content p{
-    font-size: 0.7rem;
-  }
-  .popup-details ul {
-  font-size: 0.7rem;
-}
-  .popup-content {
-    padding: 15px;
-    width: 85%;
-    font-size: 0.9rem;
-  }
-
-  .popup-buttons {
-    flex-direction: column;
-  }
-
-  .popup-buttons button {
-    width: 100%;
-  }
-}
 
 .delivered-animation-overlay {
   position: fixed;
@@ -361,5 +256,145 @@
 @media (max-width: 400px) {
   .delivered-animation-box {
     max-width: 250px;
+  }
+}
+
+
+/* Medium Devices (Tablets) */
+@media screen and (max-width: 1024px) {
+  .dashboard-container {
+    padding: 1.2rem;
+  }
+
+  .dashboard-title {
+    font-size: 1.75rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    font-size: 0.9rem;
+    padding: 0.8rem;
+  }
+}
+
+/* Small Devices (Mobiles) */
+@media screen and (max-width: 768px) {
+ 
+  
+  .orders-table th {
+    font-size: 0.7rem;
+  }
+
+
+  .orders-table tbody td {
+    padding: 0.6rem 10px;
+    font-size: 0.7rem;
+    border: none;
+  }
+  .status.pending {
+    font-size: 0.7rem;
+  background-color: #ffeccc;
+  color: #d68a00;
+}
+
+.status.delivered {
+  font-size: 0.7rem;
+  background-color: #d7f8d7;
+  color: #2e7d32;
+}
+
+.status.cancelled {
+   font-size: 0.7rem;
+  background-color: #ffd6d6;
+  color: #c62828;
+}
+
+
+.popup-buttons .btn-cancel,
+  .popup-buttons .btn-close,
+  .popup-buttons .btn-delivered{
+    font-size: 0.9rem;
+  }
+
+ 
+}
+
+/* Extra Small Devices (under 480px) */
+@media screen and (max-width: 480px) {
+  
+  .dashboard-title {
+    font-size: 1.4rem;
+  }
+
+  .orders-table tbody td {
+    font-size: 0.66rem;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .orders-table tbody td::before {
+    margin-bottom: 0.2rem;
+  }
+   .status.pending {
+    font-size: 0.66rem;
+  background-color: #ffeccc;
+  color: #d68a00;
+}
+
+.status.delivered {
+  font-size: 0.66rem;
+  background-color: #d7f8d7;
+  color: #2e7d32;
+}
+
+.status.cancelled {
+   font-size: 0.66rem;
+  background-color: #ffd6d6;
+  color: #c62828;
+}
+}
+
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 480px) {
+
+  .popup-content h2{
+    font-size: 1rem;
+  }
+  .popup-content p{
+    font-size: 0.7rem;
+  }
+  .popup-details ul {
+  font-size: 0.7rem;
+}
+  .popup-content {
+    padding: 15px;
+    width: 85%;
+    font-size: 0.9rem;
+  }
+
+  .popup-buttons {
+    flex-direction: column;
+    
+  }
+
+  .popup-buttons button {
+    width: 100%;
+  }
+  .popup-buttons .btn-cancel,
+  .popup-buttons .btn-close,
+  .popup-buttons .btn-delivered{
+    font-size: 0.7rem;
   }
 }

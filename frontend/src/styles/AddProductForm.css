@@ -1,0 +1,170 @@
+/* ===== Overlay (Background Layer) ===== */
+.popup-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;  
+  align-items: center;
+  z-index: 999;
+  animation: fadeIn 0.3s ease-in-out;
+}
+/* ===== Popup Box ===== */
+.popup-content {
+  background: #fff;
+  width: 90%;
+  max-width: 500px;
+  border-radius: 12px;
+  padding: 25px 30px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+  animation: slideUp 0.3s ease-in-out;
+  position: relative;
+}
+
+/* ===== Title ===== */
+.popup-content h2 {
+  text-align: center;
+  font-size: 1.6rem;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* ===== Form Styling ===== */
+.popup-content form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* ===== Inputs, Select, Textarea ===== */
+.popup-content input,
+.popup-content select,
+.popup-content textarea {
+  width: 100%;
+  padding: 10px 5px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+  transition: border-color 0.3s ease;
+  outline: none;
+  resize: none;
+}
+
+.popup-content input:focus,
+.popup-content select:focus,
+.popup-content textarea:focus {
+  border-color: #ff6600;
+}
+
+/* ===== Buttons ===== */
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.popup-buttons button {
+  flex: 1;
+  padding: 10px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Add Button */
+.popup-buttons button[type="submit"] {
+  background-color: #ff6600;
+  color: #fff;
+}
+
+.popup-buttons button[type="submit"]:hover {
+  background-color: #e05500;
+}
+
+/* Cancel Button */
+.popup-buttons button[type="button"] {
+  background-color: #ccc;
+  color: #333;
+}
+
+.popup-buttons button[type="button"]:hover {
+  background-color: #b3b3b3;
+}
+
+/* ===== File Input ===== */
+input[type="file"] {
+  border: 1px dashed #aaa;
+  padding: 8px;
+  background-color: #fafafa;
+  cursor: pointer;
+}
+
+input[type="file"]:hover {
+  border-color: #ff6600;
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from {
+    background: rgba(0, 0, 0, 0);
+  }
+  to {
+    background: rgba(0, 0, 0, 0.6);
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(40px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== Responsive Design ===== */
+@media (max-width: 768px) {
+  .popup-content {
+    width: 80%;
+    /* padding: 20px; */
+  }
+
+  .popup-content h2 {
+    font-size: 1.4rem;
+  }
+
+  .popup-buttons {
+    flex-direction: row;
+  }
+
+  .popup-buttons button {
+    width: 50%;
+  }
+}
+
+@media (max-width: 480px) {
+  .popup-content {
+    width: 75%;
+    /* padding: 18px; */
+  }
+
+  .popup-content h2 {
+    font-size: 1.3rem;
+  }
+
+  .popup-content input,
+  .popup-content select,
+  .popup-content textarea {
+    font-size: 0.9rem;
+  }
+
+  .popup-buttons button {
+    font-size: 0.9rem;
+  }
+}

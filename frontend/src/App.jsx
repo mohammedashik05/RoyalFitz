@@ -12,6 +12,7 @@ import Contact from "./pages/Contact";
 import WishListPage from "./pages/WishListPage";
 import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./components/AdminDashBoard";
+import AddProductForm from "./components/AddProductForm";
 import Footer from "./components/Footer";
 
 
@@ -33,7 +34,7 @@ function App() {
         <Route path="/shop" element={<Shop />} />
         <Route path="/cart" element={<Cart />} />
         <Route path="/about" element={<About />} />
-        <Route path="/product/:id" element={<ProductDetails />} />
+        <Route path="/product/:_id" element={<ProductDetails />} />
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/wishListPage" element={<WishListPage />} />
@@ -42,6 +43,14 @@ function App() {
           element={
             <AdminRoute>
               <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/addProductForm"
+          element={
+            <AdminRoute>
+              <AddProductForm />
             </AdminRoute>
           }
         />

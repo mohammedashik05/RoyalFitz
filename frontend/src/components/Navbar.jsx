@@ -4,7 +4,9 @@ import { FaShoppingCart, FaBars, FaTimes, FaHeart, FaRegHeart,FaCrown } from "re
 import "../styles/Navbar.css";
 import { ProductContext } from "../components/ProductProvider.jsx";
 
-const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
+const Navbar = () => {
+  const { cartCount, wishlist  } = useContext(ProductContext);
+  const wishlistCount = wishlist.length;
   const [isOpen, setIsOpen] = useState(false);
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
@@ -99,11 +101,9 @@ const Navbar = ({ cartCount = 0, wishlistCount = 0 }) => {
 
           {/* Wishlist Icon */}
           <Link to="/wishListPage" className="wishlist-link">
-            {wishlistCount > 0 ? (
-              <FaHeart className="wishlist_icon filled" />
-            ) : (
+           
               <FaRegHeart className="wishlist_icon" />
-            )}
+      
             {wishlistCount > 0 && <span className="wishlist-count">{wishlistCount}</span>}
           </Link>
 
