@@ -6,8 +6,8 @@ import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import {toast} from "react-hot-toast"
-// const apiUrl = "https://menswear-backend1.onrender.com/api/auth";
-const apiUrl = "http://localhost:5000/api/auth";
+const apiUrl = "https://menswear-backend1.onrender.com/api/auth";
+// const apiUrl = "http://localhost:5000/api/auth";
 
 
 console.log(apiUrl)
