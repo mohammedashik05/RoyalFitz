@@ -1,12 +1,14 @@
-import React, { useContext, useState ,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import "../styles/AddProductForm.css"
 import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 
-export default function AddProductForm()
-{
-    const navigate =useNavigate();
+export default function AddProductForm() {
+
+  const apiUrl = import.meta.env.VITE_URL;
+  const navigate = useNavigate();
   const [product, setProduct] = useState({
     id: "",
     name: "",
@@ -40,11 +42,13 @@ export default function AddProductForm()
     formData.append("price", product.price);
     formData.append("category", product.category);
     formData.append("rating", product.rating);
+    formData.append("stockCount", product.stockCount);
     formData.append("description", product.description);
     if (imageFile) formData.append("image", imageFile);
 
     try {
-      await axios.post("http://localhost:5000/api/products/add", formData, {
+
+      await axios.post(`${apiUrl}/api/products/add`, formData, {
         headers: { "Content-Type": "multipart/form-data" },
       });
       // setShowForm(false);
@@ -55,8 +59,9 @@ export default function AddProductForm()
         rating: "",
         description: "",
         image: "",
+        stockCount:"",
       });
-      alert("✅ Product added successfully!");
+      toast.success("Product Added Successfully!!");
       navigate("/shop");
     } catch (err) {
       console.error("Error adding product:", err);
@@ -66,44 +71,54 @@ export default function AddProductForm()
 
 
 
-    return(
-        <>
-          <div className="popup-overlay" onClick={() => setShowForm(false)}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Add Product</h2>
-            <form onSubmit={handleSubmit}>
-              <input name="name" placeholder="Product Name" onChange={handleChange} required />
-              <input name="price" placeholder="Price" type="number" onChange={handleChange} required />
+  return (
+    <>
+      <div className="popup-overlay" onClick={() => setShowForm(false)}>
+        <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+          <h2>Add Product</h2>
+          <form onSubmit={handleSubmit}>
+            <input name="name" placeholder="Product Name" onChange={handleChange} required />
+            <input name="price" placeholder="Price" type="number" onChange={handleChange} required />
 
-              <select name="category" onChange={handleChange} required>
-                <option value="shirt">Shirt</option>
-                <option value="pant">Pant</option>
-                <option value="shoe">Shoe</option>
-                <option value="jumpsuits">Jumpsuits</option>
-                <option value="shorts">Shorts</option>
-                <option value="watch">Watch</option>
-                <option value="tshirt">T-shirt</option>
-                <option value="belt">Belt</option>
-                <option value="suit"> Suit</option>
-              </select>
+            <select name="category" onChange={handleChange} required>
+              <option value="shirt">Shirt</option>
+              <option value="pant">Pant</option>
+              <option value="shoe">Shoe</option>
+              <option value="jumpsuits">Jumpsuits</option>
+              <option value="shorts">Shorts</option>
+              <option value="watch">Watch</option>
+              <option value="tshirt">T-shirt</option>
+              <option value="belt">Belt</option>
+              <option value="suit"> Suit</option>
+            </select>
 
-              <input name="rating" placeholder="Rating" type="number" step="0.1" onChange={handleChange} required />
-              <textarea name="description" placeholder="Description" onChange={handleChange} required></textarea>
+            <input name="rating" placeholder="Rating" type="number" step="0.1" onChange={handleChange} required />
+            <input
+              type="number"
+              name="stockCount"
+              value={product.stockCount}
+              onChange={handleChange}
+              placeholder="Enter stock quantity"
+              min="0"
+              required
+            />
 
-              <input type="file" accept="image/*" onChange={handleImageChange} required />
+            <textarea name="description" placeholder="Description" onChange={handleChange} required></textarea>
 
-              <div className="popup-buttons">
-                <button type="submit">Add</button>
-                <button type="button" onClick={() => navigate("/shop")}>
-                  Cancel
-                </button>
-              </div>
-            </form>
-          </div>
+            <input type="file" accept="image/*" onChange={handleImageChange} required />
+
+            <div className="popup-buttons">
+              <button type="submit">Add</button>
+              <button type="button" onClick={() => navigate("/shop")}>
+                Cancel
+              </button>
+            </div>
+          </form>
         </div>
-     
+      </div>
 
-        </>
-    )
+
+    </>
+  )
 
 }

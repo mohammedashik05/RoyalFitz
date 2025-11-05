@@ -1,0 +1,194 @@
+/* ===== ROYALFITZ NOTIFICATION PAGE - PREMIUM FLEX DESIGN ===== */
+
+:root {
+  --primary: #111;
+  --secondary: #f7f7f7;
+  --accent: #d47037;
+  --text-dark: #222;
+  --text-light: #666;
+  --border: #e5e5e5;
+  --danger: #ff6600;
+  --warning: #f35d12;
+  --card-bg: #fff;
+  --shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+  --radius: 12px;
+  --font: "Poppins", sans-serif;
+}
+
+/* ---------- Page ---------- */
+.notification-page {
+  min-height: 100vh;
+  background: var(--secondary);
+  padding: 2rem 1.5rem;
+  font-family: var(--font);
+  color: var(--text-dark);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.notification-page h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 2rem;
+  color: var(--primary);
+  text-align: center;
+}
+
+/* ---------- Loading & Empty ---------- */
+.loading-text,
+.empty-text {
+  font-size: 1rem;
+  color: var(--text-light);
+  margin-top: 2rem;
+  text-align: center;
+}
+
+/* ---------- Flex Container ---------- */
+.notification-flex {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 1.5rem;
+  width: 100%;
+  max-width: 1200px;
+}
+
+/* ---------- Card ---------- */
+.notification-card {
+  background: var(--card-bg);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  display: flex;
+  flex-direction: column;
+  width: 280px;
+}
+
+.notification-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
+}
+
+.notification-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ---------- Details ---------- */
+.details {
+  padding: 1rem 1.3rem 1.5rem;
+}
+
+.details h3 {
+  font-size: 1.1rem;
+  color: var(--primary);
+  margin-bottom: 0.4rem;
+}
+
+.details .category {
+  color: var(--text-light);
+  font-size: 0.9rem;
+  margin-bottom: 0.6rem;
+}
+
+/* ---------- Badge ---------- */
+.badge {
+  display: inline-block;
+  padding: 0.3rem 0.7rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+
+.badge.warning {
+  background: #fff7e0;
+  color: var(--warning);
+  border: 1px solid #fbe3ac;
+}
+
+.badge.danger {
+  background: #ffeaea;
+  color: var(--danger);
+  border: 1px solid #f7b1ab;
+}
+
+/* ---------- Buttons ---------- */
+.actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.7rem;
+  margin-top: 1rem;
+}
+
+.btn {
+  flex: 1;
+  padding: 0.6rem 0.8rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.btn.update {
+  background: var(--danger);
+  color: #fff;
+}
+
+.btn.update:hover {
+  background: #e65c00;
+}
+
+.btn.notify {
+  background: #f0f0f0;
+  color: var(--primary);
+  border: 1px solid var(--border);
+}
+
+.btn.notify:hover {
+  background: #e8e8e8;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 992px) {
+  .notification-page {
+    padding: 1.5rem;
+  }
+
+  .notification-page h2 {
+    font-size: 1.8rem;
+  }
+
+  .notification-card {
+    width: 45%;
+  }
+}
+
+@media (max-width: 768px) {
+  .notification-card {
+    width: 45%;
+  }
+
+  .actions {
+    flex-direction: row;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-page h2 {
+    font-size: 1.5rem;
+  }
+
+  .notification-card img {
+    height: 180px;
+  }
+
+  .notification-card {
+    width: 90%;
+  }
+}

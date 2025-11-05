@@ -5,7 +5,8 @@ import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import {toast} from "react-hot-toast"
+// const apiUrl = "https://menswear-backend1.onrender.com/api/auth";
 const apiUrl = "http://localhost:5000/api/auth";
 
 
@@ -41,17 +42,18 @@ export default function Login() {
         localStorage.setItem("token", response.data.token);
         localStorage.setItem("user", JSON.stringify(response.data.user));
 
-        alert("Login successful ✅");
-
-        // ✅ redirect to main home page after login
+        toast.success("Login Successfull!");
         navigate("/home");
-        //  window.location.reload(); // refresh to apply auth state
+        
       } else {
-        alert(response.data.message || "Login failed");
+        
+        toast.error(response.data.message || "Login failed");
+        
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert(error.response?.data?.message || "Server error. Please try again.");
+      toast.error(error.response?.data?.message || "Server error. Please try again.");
+      
     } finally {
       setLoading(false);
     }

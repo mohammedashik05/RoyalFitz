@@ -28,6 +28,7 @@ function AdminDashboard() {
 
   const updateOrderStatus = async (id, newStatus) => {
     try {
+       setTimeout(() => setDelivered(false), 3000);
       await axios.put(`http://localhost:5000/api/orderPlaced/update/${id}`, {
         status: newStatus,
       });
@@ -39,7 +40,7 @@ function AdminDashboard() {
       setSelectedOrder(null);
       if(newStatus=="Delivered") setDelivered(true);
 
-      setTimeout(() => setDelivered(false), 5000);
+     
 
       // alert(`Order marked as ${newStatus}`);
     } catch (err) {
@@ -97,7 +98,7 @@ function AdminDashboard() {
       {/* Popup Modal */}
       {selectedOrder && (
         <div className="popup-overlay" onClick={handleClosePopup}>
-          <div className="popup-content" onClick={(e) => e.stopPropagation()}>
+          <div className="popup-contents" onClick={(e) => e.stopPropagation()}>
             <h2>Order Details</h2>
             <div className="popup-details">
               <p><strong>User:</strong> {selectedOrder.username}</p>

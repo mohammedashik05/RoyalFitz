@@ -58,15 +58,7 @@ function Home() {
 
   return (
     <>
-      {/* Hero Section */}
-      <div  className="hero-banner">
-        <img
-          src="\public\assets\banner2.png"
-          className="banner"
-          alt=""
-        />
-      </div>
-
+     
 
       <div className="home-hero">
         <div className="hero-text">

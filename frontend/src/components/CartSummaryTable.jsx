@@ -28,6 +28,7 @@ function CartSummaryTable({ items, totalItems, totalPrice, discount, finalTotal,
     }
 
     let cartData = cartItems; // default to user's cart
+  
 
     if (id) {
       // For single product checkout

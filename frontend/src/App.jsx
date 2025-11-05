@@ -14,7 +14,9 @@ import AdminRoute from "./components/AdminRoute";
 import AdminDashboard from "./components/AdminDashBoard";
 import AddProductForm from "./components/AddProductForm";
 import Footer from "./components/Footer";
-
+import {Toaster} from "react-hot-toast"
+import UpdateProductForm from "./components/UpdateProductForm"
+import NotificationPage from "./pages/NotificationPage"
 
 function App() {
   const location = useLocation(); // get current route
@@ -25,6 +27,7 @@ function App() {
 
   return (
     <>
+      <Toaster position="top-center" reverseOrder={false} />
       {isNavbarVisible && <Navbar />}
       <Routes>
         <Route path="/" element={<Landing />} />
@@ -38,6 +41,7 @@ function App() {
         <Route path="*" element={<Navigate to="/" />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/wishListPage" element={<WishListPage />} />
+        
         <Route
           path="/adminDashboard"
           element={
@@ -54,7 +58,24 @@ function App() {
             </AdminRoute>
           }
         />
+        <Route
+        path="/update-product/:_id" 
+        element={
+          <AdminRoute>
+            <UpdateProductForm/>
+          </AdminRoute>
+        }></Route>
+
+        <Route 
+        path="/notificationPage"
+        element={
+          <AdminRoute>
+            <NotificationPage/>
+          </AdminRoute>
+
+        }></Route>
       </Routes>
+
       {/* <Footer/> */}
     </>
   );
