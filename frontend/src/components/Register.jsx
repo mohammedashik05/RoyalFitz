@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-const apiUrl = `${import.meta.env.VITE_URL}api/auth`;
+const apiUrl = `${import.meta.env.VITE_URL}/api/auth`;
 // const apiUrl = "http://localhost:5000/api/auth";
 
 export default function Register() {
