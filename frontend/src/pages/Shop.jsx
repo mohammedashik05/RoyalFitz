@@ -21,6 +21,7 @@ export default function Shop() {
     const [isAdmin, setIsAdmin] = useState(false);
 
     const navigate =useNavigate();
+      const apiUrl = import.meta.env.VITE_URL;
 
     const toggleCategory = (title) => {
         setOpenCategories((prev) =>
@@ -52,7 +53,7 @@ export default function Shop() {
                 const token = localStorage.getItem("token");
                 if (!token) return;
 
-                const res = await axios.get("http://localhost:5000/api/info/verify-admin", {
+                const res = await axios.get(`${apiUrl}/api/info/verify-admin`, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
                 setIsAdmin(res.data.isAdmin);
