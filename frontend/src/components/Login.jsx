@@ -1,59 +1,45 @@
 // src/pages/Login.jsx
 
-
 import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import {toast} from "react-hot-toast"
-const apiUrl = "https://menswear-backend1.onrender.com/api/auth";
+import { toast } from "react-hot-toast";
+import Lottie from "lottie-react";
+import Loading from "../animation/loading.json";
+
 // const apiUrl = "http://localhost:5000/api/auth";
+const apiUrl = "https://menswear-backend1.onrender.com/api/auth";
 
-
-console.log(apiUrl)
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!email || !password) {
-      alert("Please fill in all fields");
+      toast.error("Please fill in all fields");
       return;
     }
 
     try {
       setLoading(true);
 
-      // API call to backend login route
-      const response = await axios.post(`${apiUrl}/login`, {
-        email,
-        password,
-      });
-      console.log(response);
+      const response = await axios.post(`${apiUrl}/login`, { email, password });
 
       if (response.data.success) {
-        // ✅ store token & user in localStorage
         localStorage.setItem("token", response.data.token);
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-
-        toast.success("Login Successfull!");
+        toast.success("Login Successful!");
         navigate("/home");
-        
       } else {
-        
         toast.error(response.data.message || "Login failed");
-        
       }
     } catch (error) {
       console.error("Login error:", error);
       toast.error(error.response?.data?.message || "Server error. Please try again.");
-      
     } finally {
       setLoading(false);
     }
@@ -61,6 +47,12 @@ export default function Login() {
 
   return (
     <div className="auth-container">
+      {loading && (
+        <div className="loading-overlay">
+          <Lottie className="loadingAnimation" animationData={Loading} loop />
+        </div>
+      )}
+
       <form className="auth-form" onSubmit={handleSubmit}>
         <h2 className="auth-title">Login</h2>
 
@@ -70,16 +62,19 @@ export default function Login() {
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           autoComplete="off"
+          required
         />
+
         <input
           type="password"
           placeholder="Enter Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           autoComplete="off"
+          required
         />
 
-        <button type="submit" className="auth-btn"  onClick={handleSubmit} disabled={loading}>
+        <button type="submit" className="auth-btn" disabled={loading}>
           {loading ? "Logging in..." : "Login"}
         </button>
 

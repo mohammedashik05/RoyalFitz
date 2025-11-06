@@ -1,24 +1,27 @@
 import React, { useEffect, useState } from "react";
-import order_Delivered from "../animation/order_Delivered.json"
+import order_Delivered from "../animation/order_Delivered.json";
+import Loading from "../animation/loading.json"; // ✅ Add your loading animation here
 import axios from "axios";
 import "../styles/AdminDashBoard.css";
 import Lottie from "lottie-react";
 
 function AdminDashboard() {
+  const apiUrl = `${import.meta.env.VITE_URL}`;
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [delivered,setDelivered]=useState(false);
+  const [delivered, setDelivered] = useState(false);
 
   // Fetch all orders
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/orderPlaced/all");
+        const res = await axios.get(`${apiUrl}/api/orderPlaced/all`);
         setOrders(res.data);
         setLoading(false);
       } catch (err) {
         console.error("Error fetching orders:", err);
+        setLoading(false);
       }
     };
     fetchOrders();
@@ -28,8 +31,8 @@ function AdminDashboard() {
 
   const updateOrderStatus = async (id, newStatus) => {
     try {
-       setTimeout(() => setDelivered(false), 3000);
-      await axios.put(`http://localhost:5000/api/orderPlaced/update/${id}`, {
+      setTimeout(() => setDelivered(false), 3000);
+      await axios.put(`${apiUrl}/api/orderPlaced/update/${id}`, {
         status: newStatus,
       });
       setOrders((prev) =>
@@ -38,21 +41,25 @@ function AdminDashboard() {
         )
       );
       setSelectedOrder(null);
-      if(newStatus=="Delivered") setDelivered(true);
-
-     
-
-      // alert(`Order marked as ${newStatus}`);
+      if (newStatus === "Delivered") setDelivered(true);
     } catch (err) {
       console.error("Error updating order:", err);
     }
   };
 
-  if (loading) return <div className="loading">Loading orders...</div>;
+  // ✅ Show loading animation while fetching orders
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <Lottie className="loadingAnimation" animationData={Loading} loop />
+        <p className="loading-text">Fetching orders...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">Admin Dashboard - Order's</h1>
+      <h1 className="dashboard-title">Admin Dashboard - Orders</h1>
 
       <div className="table-container">
         <table className="orders-table">
@@ -83,9 +90,7 @@ function AdminDashboard() {
                 </td>
                 <td data-label="Total">₹{order.totalAmount.toFixed(2)}</td>
                 <td data-label="Status">
-                  <span
-                    className={`status ${order.status.toLowerCase()}`}
-                  >
+                  <span className={`status ${order.status.toLowerCase()}`}>
                     {order.status}
                   </span>
                 </td>
@@ -101,12 +106,24 @@ function AdminDashboard() {
           <div className="popup-contents" onClick={(e) => e.stopPropagation()}>
             <h2>Order Details</h2>
             <div className="popup-details">
-              <p><strong>User:</strong> {selectedOrder.username}</p>
-              <p><strong>Email:</strong> {selectedOrder.email}</p>
-              <p><strong>Mobile:</strong> {selectedOrder.mobileNo}</p>
-              <p><strong>Address:</strong> {selectedOrder.address}</p>
-              <p><strong>Total:</strong> ₹{selectedOrder.totalAmount.toFixed(2)}</p>
-              <p><strong>Status:</strong> {selectedOrder.status}</p>
+              <p>
+                <strong>User:</strong> {selectedOrder.username}
+              </p>
+              <p>
+                <strong>Email:</strong> {selectedOrder.email}
+              </p>
+              <p>
+                <strong>Mobile:</strong> {selectedOrder.mobileNo}
+              </p>
+              <p>
+                <strong>Address:</strong> {selectedOrder.address}
+              </p>
+              <p>
+                <strong>Total:</strong> ₹{selectedOrder.totalAmount.toFixed(2)}
+              </p>
+              <p>
+                <strong>Status:</strong> {selectedOrder.status}
+              </p>
 
               <div>
                 <strong>Products:</strong>
@@ -123,19 +140,13 @@ function AdminDashboard() {
             <div className="popup-buttons">
               <button
                 className="btn-delivered"
-                onClick={() =>
-                  updateOrderStatus(selectedOrder._id, "Delivered")
-                }
+                onClick={() => updateOrderStatus(selectedOrder._id, "Delivered")}
               >
                 Mark as Delivered
               </button>
               <button
                 className="btn-cancel"
-                onClick={() =>
-                  { updateOrderStatus(selectedOrder._id, "Cancelled");
-                    
-                  }
-                }
+                onClick={() => updateOrderStatus(selectedOrder._id, "Cancelled")}
               >
                 Cancel Order
               </button>
@@ -146,16 +157,15 @@ function AdminDashboard() {
           </div>
         </div>
       )}
-      {
-        delivered &&
+
+      {/* ✅ Delivery Success Animation */}
+      {delivered && (
         <div className="delivered-animation-overlay">
-            <div className="delivered-animation-box">
-              <Lottie animationData={order_Delivered} loop={false} />          
-            </div>
+          <div className="delivered-animation-box">
+            <Lottie animationData={order_Delivered} loop={false} />
           </div>
-      }
-
-
+        </div>
+      )}
     </div>
   );
 }

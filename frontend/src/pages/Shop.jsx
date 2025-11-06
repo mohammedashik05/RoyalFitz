@@ -1,153 +1,164 @@
-import React, { useContext, useState ,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import "../styles/Shop.css";
-// import products from "../data/products";
 import Footer from "../components/Footer";
 import ProductCard from "../components/ProductCard";
 import { ProductContext } from "../components/ProductProvider.jsx";
+import Lottie from "lottie-react";
+import Loading from "../animation/loading.json"; // ✅ your existing animation
+
 const categories = [
-    { title: "Costumes", sub: ["suit", "shirt", "pants", "tshirt", "jumpsuit", "shorts",] },
-    { title: "Accessories", sub: ["watch", "belt", "shoe"] },
-    { title: "Others", sub: ["Trunk", "vest"] },
+  { title: "Costumes", sub: ["suit", "shirt", "pants", "tshirt", "jumpsuit", "shorts"] },
+  { title: "Accessories", sub: ["watch", "belt", "shoe"] },
+  { title: "Others", sub: ["Trunk", "vest"] },
 ];
 
 export default function Shop() {
-    const { products } = useContext(ProductContext);
-    const [selectedCategory, setSelectedCategory] = useState(null);
-    const [openCategories, setOpenCategories] = useState([]);
-    const [sidebarOpen, setSidebarOpen] = useState(false);
-    const [sortOrder, setSortOrder] = useState("-");
-    const [isAdmin, setIsAdmin] = useState(false);
+  const { products } = useContext(ProductContext);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [openCategories, setOpenCategories] = useState([]);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [sortOrder, setSortOrder] = useState("-");
+  const [isAdmin, setIsAdmin] = useState(false);
+  const [loading, setLoading] = useState(true); // ✅ added loading state
 
-    const navigate =useNavigate();
-      const apiUrl = import.meta.env.VITE_URL;
+  const navigate = useNavigate();
+  const apiUrl = import.meta.env.VITE_URL;
 
-    const toggleCategory = (title) => {
-        setOpenCategories((prev) =>
-            prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
-        );
-    };
-
-    const filteredProducts = selectedCategory
-        ? products.filter((product) => product.category === selectedCategory)
-        : products;
-
-    // Apply sorting based on the sortOrder selection
-    const sortedProducts = [...filteredProducts].sort((a, b) => {
-        if (sortOrder === "low-high") return a.price - b.price;
-        if (sortOrder === "high-low") return b.price - a.price;
-        return 0;
-    });
-
-    const handleCategoryClick = (category) => {
-        setSelectedCategory(selectedCategory === category ? null : category);
-        if (window.innerWidth <= 768) setSidebarOpen(false); // auto close on mobile
-    };
-
-
-
-    useEffect(() => {
-        const checkAdmin = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) return;
-
-                const res = await axios.get(`${apiUrl}/api/info/verify-admin`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                });
-                setIsAdmin(res.data.isAdmin);
-            } catch (err) {
-                console.error("Error verifying admin:", err);
-            }
-        };
-        checkAdmin();
-    }, []);
-
-    return (
-        <>
-            <div className="shop-page">
-                {/* Mobile Sidebar Toggle Button */}
-                {/* Sidebar */}
-                <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
-                    <div className="filters-header">
-                        <h4>FILTERS</h4>
-                        <button className="reset-btn" onClick={() => setSelectedCategory(null)}>
-                            RESET
-                        </button>
-                    </div>
-                    {categories.map((cat) => (
-                        <div key={cat.title} className="filter-group">
-                            <div
-                                className="filter-header"
-                                onClick={() => toggleCategory(cat.title)}
-                            >
-                                <h5 className="category-title">{cat.title}</h5>
-                                <span className={`arrow ${openCategories.includes(cat.title) ? "open" : ""}`}>
-                                    ▼
-                                </span>
-                            </div>
-                            {cat.sub.length > 0 && openCategories.includes(cat.title) && (
-                                <ul className="subcategory-list">
-                                    {cat.sub.map((item) => (
-                                        <li
-                                            key={item}
-                                            onClick={() => handleCategoryClick(item)}
-                                            className={selectedCategory === item ? "active" : ""}
-                                        >
-                                            ▶ {item}
-                                            <hr />
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    ))}
-                    {isAdmin && (
-                        <button className="add-product-btn" onClick={() => navigate("/addProductForm")}  >
-                            ➕ Add Product
-                        </button>
-                    )}
-                    {/* Close button for mobile */}
-                    <button
-                        className="close-sidebar"
-                        onClick={() => setSidebarOpen(false)}
-                    >
-                        ✖ Close
-                    </button>
-
-
-                </aside>
-                {/* Overlay for mobile */}
-                {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}
-                {/* Product List */}
-                <main className="product-list">
-                    <button
-                        className="sidebar-toggle"
-                        onClick={() => setSidebarOpen(true)}
-                    >
-                        ☰ Filters
-                    </button>
-                    <div className="sort-bar">
-                        <span>Sort by Price</span>
-                        <select value={sortOrder} onChange={e => setSortOrder(e.target.value)}>
-                            <option value="-">-</option>
-                            <option value="low-high">Low to high</option>
-                            <option value="high-low">High to Low</option>
-                        </select>
-                    </div>
-                    <div className="product-grid">
-                        {sortedProducts.length > 0 ? (
-                            sortedProducts.map((product) => (
-                                <ProductCard key={product.id} product={product} />
-                            ))
-                        ) : (
-                            <p>No products found for this category.</p>
-                        )}
-                    </div>
-                </main>
-            </div>
-            {/* <Footer /> */}
-        </>
+  const toggleCategory = (title) => {
+    setOpenCategories((prev) =>
+      prev.includes(title) ? prev.filter((t) => t !== title) : [...prev, title]
     );
+  };
+
+  const filteredProducts = selectedCategory
+    ? products.filter((product) => product.category === selectedCategory)
+    : products;
+
+  const sortedProducts = [...filteredProducts].sort((a, b) => {
+    if (sortOrder === "low-high") return a.price - b.price;
+    if (sortOrder === "high-low") return b.price - a.price;
+    return 0;
+  });
+
+  const handleCategoryClick = (category) => {
+    setSelectedCategory(selectedCategory === category ? null : category);
+    if (window.innerWidth <= 768) setSidebarOpen(false);
+  };
+
+  // ✅ Simulate loading effect for smooth UX
+  useEffect(() => {
+    if (products.length > 0) {
+      const timer = setTimeout(() => setLoading(false), 800);
+      return () => clearTimeout(timer);
+    }
+  }, [products]);
+
+  useEffect(() => {
+    const checkAdmin = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+
+        const res = await axios.get(`${apiUrl}/api/info/verify-admin`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setIsAdmin(res.data.isAdmin);
+      } catch (err) {
+        console.error("Error verifying admin:", err);
+      }
+    };
+    checkAdmin();
+  }, []);
+
+  return (
+    <>
+      <div className="shop-page">
+        {/* Sidebar */}
+        <aside className={`sidebar ${sidebarOpen ? "open" : ""}`}>
+          <div className="filters-header">
+            <h4>FILTERS</h4>
+            <button className="reset-btn" onClick={() => setSelectedCategory(null)}>
+              RESET
+            </button>
+          </div>
+          {categories.map((cat) => (
+            <div key={cat.title} className="filter-group">
+              <div className="filter-header" onClick={() => toggleCategory(cat.title)}>
+                <h5 className="category-title">{cat.title}</h5>
+                <span
+                  className={`arrow ${openCategories.includes(cat.title) ? "open" : ""}`}
+                >
+                  ▼
+                </span>
+              </div>
+              {cat.sub.length > 0 && openCategories.includes(cat.title) && (
+                <ul className="subcategory-list">
+                  {cat.sub.map((item) => (
+                    <li
+                      key={item}
+                      onClick={() => handleCategoryClick(item)}
+                      className={selectedCategory === item ? "active" : ""}
+                    >
+                      ▶ {item}
+                      <hr />
+                    </li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+          {isAdmin && (
+            <button
+              className="add-product-btn"
+              onClick={() => navigate("/addProductForm")}
+            >
+              ➕ Add Product
+            </button>
+          )}
+          <button className="close-sidebar" onClick={() => setSidebarOpen(false)}>
+            ✖ Close
+          </button>
+        </aside>
+
+        {sidebarOpen && <div className="overlay" onClick={() => setSidebarOpen(false)}></div>}
+
+        {/* Product List Section */}
+        <main className="product-list">
+          <button className="sidebar-toggle" onClick={() => setSidebarOpen(true)}>
+            ☰ Filters
+          </button>
+
+          <div className="sort-bar">
+            <span>Sort by Price</span>
+            <select value={sortOrder} onChange={(e) => setSortOrder(e.target.value)}>
+              <option value="-">-</option>
+              <option value="low-high">Low to High</option>
+              <option value="high-low">High to Low</option>
+            </select>
+          </div>
+
+          {/* ✅ Show Loading Animation before products appear */}
+          {loading ? (
+            <div className="loading-section">
+              <Lottie className="loadingAnimation" animationData={Loading} loop />
+              <p className="loading-text">Loading products...</p>
+            </div>
+          ) : (
+            <div className="product-grid">
+              {sortedProducts.length > 0 ? (
+                sortedProducts.map((product) => (
+                  <ProductCard key={product._id} product={product} />
+                ))
+              ) : (
+                <p className="no-products">No products found for this category.</p>
+              )}
+            </div>
+          )}
+        </main>
+      </div>
+      {/* <Footer /> */}
+    </>
+  );
 }

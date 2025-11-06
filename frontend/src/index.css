@@ -5,3 +5,65 @@
   padding: 0;
   box-sizing: border-box; */
 }
+
+/* ===== Responsive Lottie Loading Animation ===== */
+
+
+
+.loading-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+
+.loadingAnimation {
+  width: 160px;
+  height: 160px;
+  margin: auto;
+  display: block;
+  position: relative;
+}
+
+/* Wrapper div centers it perfectly */
+
+
+/* ---------- Responsive Breakpoints ---------- */
+
+
+
+/* 🖥️ Large screens (default) */
+@media (min-width: 1024px) {
+  .loadingAnimation {
+    width: 220px;
+    height: 220px;
+  }
+}
+
+/* 💻 Tablets */
+@media (max-width: 1024px) and (min-width: 768px) {
+  .loadingAnimation {
+    width: 180px;
+    height: 180px;
+  }
+}
+
+/* 📱 Mobile */
+@media (max-width: 768px) {
+  .loadingAnimation {
+    width: 140px;
+    height: 140px;
+  }
+}
+
+/* 🧭 Extra small phones */
+@media (max-width: 480px) {
+  .loadingAnimation {
+    width: 120px;
+    height: 120px;
+  }
+}

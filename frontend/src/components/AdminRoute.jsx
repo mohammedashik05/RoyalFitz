@@ -1,6 +1,9 @@
 import React, { useEffect, useState, useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { ProductContext } from "../components/ProductProvider.jsx";
+import Lottie from "lottie-react";
+import Loading from "../animation/loading.json"; // ✅ Import your Lottie JSON
+// import "../styles/AdminRoute.css"; // ✅ Add new CSS for animation layout
 
 const AdminRoute = ({ children }) => {
   const [admin, setAdmin] = useState(false);
@@ -10,8 +13,8 @@ const AdminRoute = ({ children }) => {
   useEffect(() => {
     const checkAdmin = async () => {
       try {
-        const result = await verifyAdmin(); // ✅ Await async call
-        setAdmin(result.isAdmin);           // backend returns { isAdmin: true/false }
+        const result = await verifyAdmin();
+        setAdmin(result.isAdmin);
       } catch (err) {
         console.error("Error verifying admin:", err);
         setAdmin(false);
@@ -23,8 +26,17 @@ const AdminRoute = ({ children }) => {
     checkAdmin();
   }, [verifyAdmin]);
 
-  if (loading) return <div>Loading...</div>;
+  // ✅ Show Lottie animation while verifying admin access
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <Lottie className="loadingAnimation" animationData={Loading} loop />
+        <p className="loading-text">Verifying Admin Access...</p>
+      </div>
+    );
+  }
 
+  // ✅ Render route only if verified admin
   return admin ? children : <Navigate to="/home" replace />;
 };
 

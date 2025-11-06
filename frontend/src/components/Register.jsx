@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import "../styles/Auth.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import {toast} from "react-hot-toast"
 const apiUrl = `${import.meta.env.VITE_URL}/api/auth`;
 // const apiUrl = "http://localhost:5000/api/auth";
 
@@ -22,10 +23,13 @@ export default function Register() {
         password,
       });
 
-      alert(res.data.message || "Registration successful!");
+      // alert(res.data.message || "Registration successful!");
+      toast.success(data.message || "Registration successful!"  );
+
       navigate("/login"); // redirect to login after success
     } catch (err) {
-      alert(err.response?.data?.error || "Something went wrong!");
+      // alert(err.response?.data?.error || "Something went wrong!");
+      toast.error(err.response?.data?.error  ||  "Something went wrong!")
     }
   };
 

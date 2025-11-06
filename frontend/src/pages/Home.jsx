@@ -7,6 +7,7 @@ import { ProductContext } from "../components/ProductProvider.jsx";
 import Footer from "../components/Footer.jsx";
 import home_animation from "../animation/home.json";
 import Lottie from "lottie-react";
+import Loading from "../animation/loading.json";
 
 // Shuffle products
 function shuffleArray(array) {
@@ -27,6 +28,8 @@ function getItemsPerPage() {
 }
 
 function Home() {
+
+   const [loading, setLoading] = useState(true);
   const { products } = useContext(ProductContext);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(getItemsPerPage());
@@ -35,7 +38,14 @@ function Home() {
 
   // Shuffle products whenever products array changes
   useEffect(() => {
-    setShuffledProducts(shuffleArray(products));
+    if (products && products.length > 0) {
+      setTimeout(() => {
+        setShuffledProducts(shuffleArray(products));
+        setLoading(false);
+      }, 800); // slight delay for smooth transition
+    } else {
+      setLoading(true);
+    }
   }, [products]);
 
   // Update items per page on resize
@@ -43,11 +53,12 @@ function Home() {
     function handleResize() {
       setItemsPerPage(getItemsPerPage());
       setCurrentPage(1);
-      setShuffledProducts(shuffleArray(products));
+      if (products.length > 0) setShuffledProducts(shuffleArray(products));
     }
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
   }, [products]);
+
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -58,7 +69,7 @@ function Home() {
 
   return (
     <>
-     
+
 
       <div className="home-hero">
         <div className="hero-text">
@@ -91,20 +102,35 @@ function Home() {
       </div>
 
       {/* Product Section */}
+
+
+      {/* Product Section */}
       <div className="home-container">
         <h2 className="home-title">Our Collections</h2>
-        <div className="product-grid">
-          {currentProducts.map((product) => (
-            <ProductCard key={product._id} product={product} />
-          ))}
-        </div>
 
-        {/* Pagination */}
-        <div className="pagination">
-          {hasPrevious && <button onClick={() => setCurrentPage((p) => p - 1)}>&lt;</button>}
-          {hasNext && <button onClick={() => setCurrentPage((p) => p + 1)}>&gt;</button>}
-        </div>
+        {/* ✅ Loading animation only inside product section */}
+        {products.length === 0 ? (
+          <div className="loading-section">
+            <Lottie className="loadingAnimation" animationData={Loading} loop />
+            <p className="loading-text">Fetching products...</p>
+          </div>
+        ) : (
+          <>
+            <div className="product-grid">
+              {currentProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="pagination">
+              {hasPrevious && <button onClick={() => setCurrentPage((p) => p - 1)}>&lt;</button>}
+              {hasNext && <button onClick={() => setCurrentPage((p) => p + 1)}>&gt;</button>}
+            </div>
+          </>
+        )}
       </div>
+
 
       <Footer />
     </>
