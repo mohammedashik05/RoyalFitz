@@ -113,7 +113,6 @@ export default function ProductProvider({ children }) {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data.user);
-      toast.success("Profile updated successfully!");
     } catch (err) {
       console.error("Profile update error:", err);
       toast.error("Failed to update profile");
@@ -179,7 +178,6 @@ export default function ProductProvider({ children }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCartItems(res.data.cart);
-      toast.success("Added to cart!");
     } catch (err) {
       toast.error("Failed to add to cart");
     }
