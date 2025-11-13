@@ -242,7 +242,7 @@ export default function ProductProvider({ children }) {
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCartItems(res.data.cart);
-      toast.success("Cart cleared");
+      // toast.success("Cart cleared");
     } catch {
       toast.error("Failed to clear cart");
     }
