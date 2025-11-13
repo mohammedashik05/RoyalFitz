@@ -1,10 +1,9 @@
 import React, { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { toast } from "react-hot-toast";
 
-// 1️⃣ Create Context
 export const ProductContext = createContext();
 
-// 2️⃣ Provider Component
 export default function ProductProvider({ children }) {
   const [products, setProducts] = useState([]);
   const [cartItems, setCartItems] = useState([]);
@@ -12,57 +11,45 @@ export default function ProductProvider({ children }) {
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(0);
+  const [productsFetched, setProductsFetched] = useState(false);
 
   const apiUrl = import.meta.env.VITE_URL;
 
   const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const wishListCount = wishlist.reduce((acc, item) => acc + item.quantity, 0);
-const [notificationCount, setNotificationCount] = useState(0);
+  const wishListCount = wishlist.length;
 
-  // const lowStockCount =Notification.reduce((acc,item)=> acc+ item.quantity ,0);
+  //  🧩 PRODUCTS
+  const fetchProducts = async (force = false) => {
+    if (productsFetched && !force) return;
+    try {
+      const res = await axios.get(`${apiUrl}/api/products/`);
+      setProducts(res.data);
+      setProductsFetched(true);
+    } catch (err) {
+      console.error("Error fetching products:", err);
+    }
+  };
 
-  // 🟢 Fetch All Products
   useEffect(() => {
-    const fetchProducts = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/products/`);
-        setProducts(res.data);
-      } catch (err) {
-        console.error("Error fetching products:", err);
-      }
-    };
     fetchProducts();
   }, []);
 
-  // 🟢 Fetch User Data (cart & wishlist)
-  useEffect(() => {
-    if (!token) return;
-    const fetchUserData = async () => {
-      try {
-        const res = await axios.get(`${apiUrl}/api/user/data`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        setCartItems(res.data.cart);
-        setWishlist(res.data.wishlist);
-      } catch (err) {
-        console.error("Error fetching user data:", err);
-      }
-    };
-    fetchUserData();
+  const refreshProducts = async () => fetchProducts(true);
 
-  }, [user, token]);
 
-  // 🟢 Fetch Logged-in User Info
+  //  👤 USER PROFILE & AUTH
+
   const fetchUser = async () => {
     if (!token) return null;
-    try { 
+    try {
       const res = await axios.get(`${apiUrl}/api/info/profile`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setUser(res.data);
       return res.data;
     } catch (err) {
-      console.log("Error fetching user data:", err);
+      console.error("Error fetching user:", err);
       return null;
     }
   };
@@ -71,7 +58,18 @@ const [notificationCount, setNotificationCount] = useState(0);
     fetchUser();
   }, [token]);
 
-  // 🟢 Verify Admin
+  // 🔄 Sync login/logout across all tabs
+  useEffect(() => {
+    const handleStorage = (e) => {
+      if (e.key === "token") {
+        setToken(e.newValue || "");
+      }
+    };
+    window.addEventListener("storage", handleStorage);
+    return () => window.removeEventListener("storage", handleStorage);
+  }, []);
+
+
   const verifyAdmin = async () => {
     try {
       const res = await axios.get(`${apiUrl}/api/info/verify-admin`, {
@@ -86,25 +84,88 @@ const [notificationCount, setNotificationCount] = useState(0);
     }
   };
 
-  // 🛒 Add to Cart with Stock Check
-  const addToCart = async (product) => {
-    if (!token) {
-      alert("Please log in to add products to cart");
-      return;
-    }
+  //  🖼️ UPLOAD AVATAR (Cloudinary)
+  const uploadAvatar = async (file) => {
+    const formData = new FormData();
+    formData.append("avatar", file);
 
-    if (product.stockCount <= 0) {
-      alert("This product is out of stock!");
+    try {
+      const res = await axios.put(`${apiUrl}/api/info/upload-avatar`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      await fetchUser(); // 🔥 force fresh user with new avatar
+      toast.success("Profile picture updated!");
+    } catch (err) {
+      console.error("Avatar upload failed:", err);
+      toast.error("Failed to upload avatar");
+    }
+  };
+
+
+  //  ✏️ UPDATE PROFILE INFO 
+  const updateProfile = async (profileData) => {
+    try {
+      const res = await axios.put(`${apiUrl}/api/info/update-profile`, profileData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setUser(res.data.user);
+      toast.success("Profile updated successfully!");
+    } catch (err) {
+      console.error("Profile update error:", err);
+      toast.error("Failed to update profile");
+    }
+  };
+
+  //  🔒 UPDATE PASSWORD
+
+  const updatePassword = async (oldPassword, newPassword) => {
+    try {
+      const res = await axios.put(
+        `${apiUrl}/api/info/update-password`,
+        { oldPassword, newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      toast.success(res.data.message || "Password updated successfully!");
+    } catch (err) {
+      console.error("Password update error:", err);
+      toast.error(err.response?.data?.message || "Failed to update password");
+    }
+  };
+
+  // 🛒 CART MANAGEMENT
+
+  useEffect(() => {
+    if (!token) return;
+    const fetchUserData = async () => {
+      try {
+        const res = await axios.get(`${apiUrl}/api/user/data`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setCartItems(res.data.cart || []);
+        setWishlist(res.data.wishlist || []);
+      } catch (err) {
+        console.error("Error fetching user data:", err);
+      }
+    };
+    fetchUserData();
+  }, [token]);
+
+  const addToCart = async (product) => {
+    if (!token) return toast.error("Please log in to add items to cart");
+    const stock = Number(product.stock ?? product.stockCount ?? 0);
+    if (stock <= 0) return toast.error("This product is out of stock!");
+
+    const existingItem = cartItems.find((i) => i.productId === product._id);
+    if (existingItem) {
+      incrementQuantity(product._id);
       return;
     }
 
     try {
-      const existingItem = cartItems.find((i) => i.productId === product._id);
-      if (existingItem) {
-        incrementQuantity(product._id);
-        return;
-      }
-
       const res = await axios.post(
         `${apiUrl}/api/user/cart`,
         {
@@ -113,28 +174,25 @@ const [notificationCount, setNotificationCount] = useState(0);
           price: product.price,
           image: product.image,
           quantity: 1,
+          stock,
         },
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
+        { headers: { Authorization: `Bearer ${token}` } }
       );
-
       setCartItems(res.data.cart);
+      toast.success("Added to cart!");
     } catch (err) {
-      console.error(err);
+      toast.error("Failed to add to cart");
     }
   };
 
-  // 🔼 Increment Quantity
   const incrementQuantity = async (productId) => {
     const item = cartItems.find((i) => i.productId === productId);
     if (!item) return;
 
     const product = products.find((p) => p._id === productId);
-    if (product && item.quantity >= product.stockCount) {
-      alert("Not enough stock available!");
-      return;
-    }
+    const stock = Number(product?.stock ?? product?.stockCount ?? 0);
+
+    if (item.quantity >= stock) return toast.error("Not enough stock available!");
 
     try {
       const res = await axios.put(
@@ -143,20 +201,16 @@ const [notificationCount, setNotificationCount] = useState(0);
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCartItems(res.data.cart);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error("Failed to update quantity");
     }
   };
 
-  // 🔽 Decrement Quantity
   const decrementQuantity = async (productId) => {
     const item = cartItems.find((i) => i.productId === productId);
     if (!item) return;
 
-    if (item.quantity === 1) {
-      removeFromCart(productId);
-      return;
-    }
+    if (item.quantity === 1) return removeFromCart(productId);
 
     try {
       const res = await axios.put(
@@ -165,24 +219,23 @@ const [notificationCount, setNotificationCount] = useState(0);
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCartItems(res.data.cart);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error("Failed to update quantity");
     }
   };
 
-  // ❌ Remove from Cart
   const removeFromCart = async (_id) => {
     try {
       const res = await axios.delete(`${apiUrl}/api/user/cart/${_id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       setCartItems(res.data.cart);
-    } catch (err) {
-      console.error(err);
+      toast.success("Removed from cart");
+    } catch {
+      toast.error("Failed to remove item");
     }
   };
 
-  // 🧹 Clear Cart
   const clearCart = async () => {
     try {
       const res = await axios.put(
@@ -191,144 +244,176 @@ const [notificationCount, setNotificationCount] = useState(0);
         { headers: { Authorization: `Bearer ${token}` } }
       );
       setCartItems(res.data.cart);
-    } catch (err) {
-      console.error(err);
+      toast.success("Cart cleared");
+    } catch {
+      toast.error("Failed to clear cart");
     }
   };
 
-  // ❤️ Toggle Wishlist
-  const toggleWishlist = async (product) => {
-    if (!token) {
-      alert("Please log in to modify wishlist");
-      return;
+  // ✅ Place Order + Reduce Stock + Notify Admin
+  const orderPlaced = async (orderData) => {
+    if (
+      !orderData.username ||
+      !orderData.email ||
+      !orderData.address ||
+      !orderData.mobileNo ||
+      !orderData.cart ||
+      !orderData.totalAmount
+    ) {
+      console.error("All fields are required");
+      return false;
     }
 
     try {
-      let productid = product._id;
-      if (product.productId) productid = product.productId;
+      // 🟢 Place order first
+      const res = await axios.post(
+        `${apiUrl}/api/orderPlaced/orderplaced`,
+        orderData,
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
 
-      const exists = wishlist.find((item) => item.productId === productid);
+      console.log("✅ Order placed:", res.data);
+
+      // 🟢 Reduce stock for each cart item
+      for (const item of orderData.cart) {
+        const productId = item.productId;
+        const quantity = item.quantity || 1;
+
+        if (!productId) {
+          console.warn("⚠️ Missing product ID in item:", item);
+          continue;
+        }
+
+        console.log(`Reducing stock for ${productId} by ${quantity}`);
+
+        await axios.put(`${apiUrl}/api/products/reduce-stock/${productId}`, { quantity });
+      }
+
+      // 🟢 Refresh products after stock update
+      const updated = await axios.get(`${apiUrl}/api/products/`);
+      setProducts(updated.data);
+
+      return true;
+    } catch (err) {
+      console.error("Error placing order:", err.response?.data || err.message);
+      return false;
+    }
+  };
+
+
+
+
+  //  ❤️ WISHLIST
+  const toggleWishlist = async (product) => {
+    if (!token) return toast.error("Please log in to modify wishlist");
+    try {
+      const productId = product._id || product.productId;
+      const exists = wishlist.find((item) => item.productId === productId);
       let res;
       if (exists) {
         res = await axios.put(
           `${apiUrl}/api/user/wishlist/remove`,
-          { productId: productid },
+          { productId },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        toast.success("Removed from wishlist");
       } else {
         res = await axios.post(
           `${apiUrl}/api/user/wishlist`,
           {
-            productId: product._id,
+            productId,
             name: product.name,
             price: product.price,
             image: product.image,
           },
           { headers: { Authorization: `Bearer ${token}` } }
         );
+        toast.success("Added to wishlist");
       }
-
       setWishlist(res.data.wishlist);
-    } catch (err) {
-      console.error(err);
+    } catch {
+      toast.error("Failed to update wishlist");
     }
   };
 
-  // ✅ Place Order + Reduce Stock + Notify Admin
-const orderPlaced = async (orderData) => {
-  if (
-    !orderData.username ||
-    !orderData.email ||
-    !orderData.address ||
-    !orderData.mobileNo ||
-    !orderData.cart ||
-    !orderData.totalAmount
-  ) {
-    console.error("All fields are required");
-    return false;
-  }
 
-  try {
-    // 🟢 Place order first
-    const res = await axios.post(
-      `${apiUrl}/api/orderPlaced/orderplaced`,
-      orderData,
-      { headers: { Authorization: `Bearer ${token}` } }
-    );
 
-    console.log("✅ Order placed:", res.data);
 
-    // 🟢 Reduce stock for each cart item
-    for (const item of orderData.cart) {
-      const productId =  item.productId;
-      const quantity =  item.quantity || 1;
-
-      if (!productId) {
-        console.warn("⚠️ Missing product ID in item:", item);
-        continue;
-      }
-
-      console.log(`Reducing stock for ${productId} by ${quantity}`);
-
-      await axios.put(`${apiUrl}/api/products/reduce-stock/${productId}`, { quantity });
+  //  🔔 LOW STOCK NOTIFICATIONS
+  const fetchNotificationCount = async () => {
+    try {
+      const res = await axios.get(`${apiUrl}/api/notifications/low-stock-count`);
+      if (res.data.success) setNotificationCount(res.data.count || 0);
+    } catch (err) {
+      console.error("Error fetching notification count:", err);
     }
+  };
 
-    // 🟢 Refresh products after stock update
-    const updated = await axios.get(`${apiUrl}/api/products/`);
-    setProducts(updated.data);
-
-    return true;
-  } catch (err) {
-    console.error("Error placing order:", err.response?.data || err.message);
-    return false;
-  }
-};
+  useEffect(() => {
+    fetchNotificationCount();
+    const interval = setInterval(fetchNotificationCount, 15000);
+    return () => clearInterval(interval);
+  }, []);
 
 
-// 🟢 Fetch low stock count
-const fetchNotificationCount = async () => {
-  try {
-    const res = await axios.get(`${apiUrl}/api/notifications/low-stock-count`);
-    if (res.data.success) setNotificationCount(res.data.count || 0);
-  } catch (err) {
-    console.error("Error fetching notification count:", err.message);
-  }
-};
+  // 🔥 SET TOKEN (use this after login)
+  const setAuthToken = (newToken) => {
+    if (newToken) {
+      localStorage.setItem("token", newToken);
+      setToken(newToken);
+    } else {
+      localStorage.removeItem("token");
+      setToken("");
+    }
+  };
 
-// fetch on load
-useEffect(() => {
-  fetchNotificationCount();
-  const interval = setInterval(fetchNotificationCount, 15000); // refresh every 15s
-  return () => clearInterval(interval);
-}, []);
+  // 🔥 LOGOUT FUNCTION
+  const logout = () => {
+    setToken("");
+    setUser(null);
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+  };
 
 
-
-
+  //  PROVIDER EXPORT
   return (
     <ProductContext.Provider
       value={{
-        verifyAdmin,
-        isAdmin,
-        user,
-        token,
         products,
         cartItems,
+        wishlist,
+        user,
+        token,
+        isAdmin,
+        notificationCount,
         cartCount,
         wishListCount,
-        notificationCount,
+
+        // Auth/Profile Methods
+        fetchUser,
+        updateProfile,
+        updatePassword,
+        uploadAvatar,
+        verifyAdmin,
+        setAuthToken,   // 🔥 added
+        logout,         // 🔥 added
+
+        // Product/Cart Methods
+        refreshProducts,
         addToCart,
         incrementQuantity,
         decrementQuantity,
         removeFromCart,
         clearCart,
-        wishlist,
-        toggleWishlist,
         orderPlaced,
-        fetchUser,
+
+        // Wishlist
+        toggleWishlist,
       }}
     >
       {children}
     </ProductContext.Provider>
+
   );
 }

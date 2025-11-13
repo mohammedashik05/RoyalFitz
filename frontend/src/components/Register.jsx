@@ -22,10 +22,9 @@ export default function Register() {
         email,
         password,
       });
-
-      // alert(res.data.message || "Registration successful!");
-      toast.success(data.message || "Registration successful!"  );
-
+     
+      toast.success(res.data.message || "Registration successful!");
+      
       navigate("/login"); // redirect to login after success
     } catch (err) {
       // alert(err.response?.data?.error || "Something went wrong!");

@@ -6,6 +6,8 @@ import { ProductContext } from "../components/ProductProvider.jsx";
 import CartSummaryTable from "../components/CartSummaryTable.jsx";
 import { FaRegHeart, FaHeart } from "react-icons/fa";
 import { toast } from "react-hot-toast";
+import Lottie from "lottie-react";
+import Loading from "../animation/loading.json"; // ✅ Loading animation file
 
 function ProductDetails() {
   const { _id } = useParams();
@@ -18,7 +20,8 @@ function ProductDetails() {
   const [admin, setAdmin] = useState(false);
   const [showBuyNow, setShowBuyNow] = useState(false);
   const [orderPlaced, setOrderPlaced] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [deleting, setDeleting] = useState(false);
 
   // ✅ Verify Admin
   useEffect(() => {
@@ -27,25 +30,45 @@ function ProductDetails() {
         const result = await verifyAdmin();
         setAdmin(result.isAdmin);
       } catch (err) {
-        console.error("Error verifying admin:", err);
         setAdmin(false);
       }
     };
     checkAdmin();
   }, [verifyAdmin]);
 
-  // ✅ Get Product
+  // ✅ Wait for product data
+  useEffect(() => {
+    if (products && products.length > 0) setLoading(false);
+  }, [products]);
+
+  // ✅ Get scroll & category info from location state
+  const scrollPosition = location.state?.scrollPosition || 0;
+  const fromCategory = location.state?.fromCategory || null;
+
+  // ✅ Show loading animation while waiting for data
+  if (loading) {
+    return (
+      <div className="loading-container">
+        <Lottie className="loadingAnimation" animationData={Loading} loop />
+        <p className="loading-text">Loading product details...</p>
+      </div>
+    );
+  }
+
+  // ✅ Get selected product
   const product = products.find((p) => p._id === _id);
   if (!product) return <h2>Product not found</h2>;
 
+  // ✅ Check wishlist & stock
   const isInWishlist = wishlist.some((item) => item.productId === _id);
+  const isOutOfStock = product.stock <= 0;
   const rating = Math.round(product.rating || 4);
   const totalStars = 6;
   const stars = "★".repeat(rating) + "☆".repeat(totalStars - rating);
 
   // ✅ Add to Cart with stock check
   const handleAddToCart = () => {
-    if (product.stockCount <= 0) {
+    if (isOutOfStock) {
       toast.error("This product is out of stock!");
       return;
     }
@@ -60,7 +83,7 @@ function ProductDetails() {
 
   // 🛒 Buy Now
   const handleBuyNow = () => {
-    if (product.stockCount <= 0) {
+    if (isOutOfStock) {
       toast.error("This product is out of stock!");
       return;
     }
@@ -79,12 +102,10 @@ function ProductDetails() {
     if (!confirmDelete) return;
 
     try {
-      setLoading(true);
+      setDeleting(true);
       const response = await fetch(`${import.meta.env.VITE_URL}/api/products/delete/${_id}`, {
         method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
       });
 
       if (!response.ok) {
@@ -95,10 +116,9 @@ function ProductDetails() {
       toast.success("Product deleted successfully!");
       navigate("/shop");
     } catch (error) {
-      console.error("Error deleting product:", error);
       toast.error(error.message || "An error occurred while deleting");
     } finally {
-      setLoading(false);
+      setDeleting(false);
     }
   };
 
@@ -118,7 +138,10 @@ function ProductDetails() {
       <div className="product-detail">
         {/* 🖼 Image + Wishlist */}
         <div className="img_icons">
-          <div onClick={handleWishlistClick} style={{ cursor: "pointer", display: "inline-block" }}>
+          <div
+            onClick={handleWishlistClick}
+            style={{ cursor: "pointer", display: "inline-block" }}
+          >
             {isInWishlist ? (
               <FaHeart size={20} className="watchList_icon_unchoose" color="#ff6600" />
             ) : (
@@ -136,40 +159,45 @@ function ProductDetails() {
         {/* 📄 Product Info */}
         <div className="product-content">
           <h2>{product.name}</h2>
-          <p><strong>Price:</strong> ₹ {product.price}</p>
+          <p>
+            <strong>Price:</strong> ₹ {product.price}
+          </p>
           <p className="stars">{stars}</p>
-          <p><strong>Description:</strong> {product.description || "No description available."}</p>
+          <p>
+            <strong>Description:</strong>{" "}
+            {product.description || "No description available."}
+          </p>
 
           {/* 🧮 Stock Info */}
           {admin ? (
             <p>
               <strong>Stock Count:</strong>{" "}
-                <span className="text-green-600">{product.stock}</span>
+              <span className="text-green-600">{product.stock}</span>
             </p>
           ) : (
             <>
               {product.stock <= 10 && product.stock > 0 && (
                 <p className="text-orange-500">⚠ Few items left ({product.stock})</p>
               )}
-              {product.stock === 0 && (
+              {isOutOfStock && (
                 <p className="text-red-600 font-semibold">❌ Out of Stock</p>
               )}
             </>
           )}
 
-          {/* 🧭 Buttons */}
+          {/* 🧭 Action Buttons */}
           <div className="button-group">
             <button
               className="add-to-cart-btn"
               onClick={handleAddToCart}
-              disabled={product.stockCount === 0}
+              disabled={isOutOfStock}
             >
               Add to Cart
             </button>
             <button
               className="buy-btn"
               onClick={handleBuyNow}
-              disabled={product.stockCount === 0}
+              disabled={isOutOfStock}
             >
               Buy Now
             </button>
@@ -178,16 +206,32 @@ function ProductDetails() {
           {/* 🔧 Admin Actions */}
           {admin && (
             <div className="button-group admin-actions">
-              <button className="update_btn" onClick={handleUpdateProduct} disabled={loading}>
+              <button
+                className="update_btn"
+                onClick={handleUpdateProduct}
+                disabled={deleting}
+              >
                 Update
               </button>
-              <button className="delete-btn" onClick={handleDeleteProduct} disabled={loading}>
-                {loading ? "Deleting..." : "Delete"}
+              <button
+                className="delete-btn"
+                onClick={handleDeleteProduct}
+                disabled={deleting}
+              >
+                {deleting ? "Deleting..." : "Delete"}
               </button>
             </div>
           )}
 
-          <button className="back-btn" onClick={() => navigate("/shop")}>
+          {/* ⬅ Back Button (Preserves category & scroll) */}
+          <button
+            className="back-btn"
+            onClick={() =>
+              navigate("/shop", {
+                state: { fromCategory, scrollPosition },
+              })
+            }
+          >
             ← Back to Shop
           </button>
         </div>

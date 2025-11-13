@@ -1,0 +1,145 @@
+.orders-container {
+  padding: 2rem;
+  background: #f8f9fa;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.orders-container h2 {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 1.5rem;
+  color: #222;
+  text-align: center;
+}
+
+.no-orders {
+  font-size: 1.2rem;
+  color: #555;
+  margin-top: 2rem;
+  text-align: center;
+}
+
+.orders-table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.orders-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.orders-table thead {
+  background: #007bff;
+  color: white;
+}
+
+.orders-table th,
+.orders-table td {
+  padding: 1rem;
+  text-align: center;
+  border-bottom: 1px solid #ddd;
+}
+
+.orders-table th {
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+.product-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.product-list li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 6px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.order-product-img {
+  width: 40px;
+  height: 40px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.qty {
+  color: #777;
+  font-size: 0.9rem;
+}
+
+.status {
+  padding: 6px 12px;
+  border-radius: 8px;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background: #fff3cd;
+  color: #856404;
+}
+
+.status.delivered {
+  background: #d4edda;
+  color: #155724;
+}
+
+.status.canceled {
+  background: #f8d7da;
+  color: #721c24;
+}
+
+/* 📱 Responsive Design */
+@media (max-width: 768px) {
+  .orders-container {
+    padding: 1rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .product-list li {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .order-product-img {
+    width: 50px;
+    height: 50px;
+  }
+
+  .orders-container h2 {
+    font-size: 1.6rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .orders-table {
+    font-size: 0.8rem;
+  }
+
+  .orders-table th,
+  .orders-table td {
+    padding: 0.5rem;
+  }
+
+  .orders-container h2 {
+    font-size: 1.4rem;
+  }
+}

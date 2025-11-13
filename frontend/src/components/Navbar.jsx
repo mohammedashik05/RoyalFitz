@@ -1,113 +1,165 @@
-import React, { useState, useRef, useEffect, useContext } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import {
   FaShoppingCart,
   FaBars,
   FaTimes,
-  FaHeart,
   FaRegHeart,
-  FaCrown,
-  FaBell
+  FaBell,
 } from "react-icons/fa";
 import "../styles/Navbar.css";
 import { ProductContext } from "../components/ProductProvider.jsx";
 
+const DEFAULT_AVATAR =
+  "https://cdn-icons-png.flaticon.com/512/847/847969.png";
+
 const Navbar = () => {
-  const { cartCount, wishlist, verifyAdmin ,notificationCount } = useContext(ProductContext);
-  const wishlistCount = wishlist.length;
-  // const lowStockCount = notifications.length;
+  const {
+    cartCount,
+    wishlist,
+    verifyAdmin,
+    notificationCount,
+    user,
+    token,
+    logout,          // ← use this from provider
+  } = useContext(ProductContext);
+
+  const wishlistCount = wishlist?.length || 0;
 
   const [isOpen, setIsOpen] = useState(false);
+  const [admin, setAdmin] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [logoutPopup, setLogoutPopup] = useState(false);
+  const [avatarSrc, setAvatarSrc] = useState(DEFAULT_AVATAR);
+
+  const dropdownRef = useRef(null);
+  const avatarRef = useRef(null);
   const menuRef = useRef(null);
   const toggleRef = useRef(null);
+
   const navigate = useNavigate();
+  const location = useLocation();
 
-  const toggleMenu = () => setIsOpen(!isOpen);
+  const toggleMenu = () => setIsOpen((v) => !v);
+  const toggleDropdown = () => setDropdownOpen((v) => !v);
 
-  const [admin, setAdmin] = useState(false);
-
+  /* ---------------------------------------------------------
+     Update avatar instantly whenever user changes
+  ---------------------------------------------------------- */
   useEffect(() => {
-    const checkAdmin = async () => {
-      try {
-        const result = await verifyAdmin();
-        setAdmin(result.isAdmin);
-      } catch (err) {
-        console.error("Error verifying admin:", err);
-        setAdmin(false);
-      }
-    };
-    checkAdmin();
-  }, [verifyAdmin]);
+    if (user?.avatar) setAvatarSrc(user.avatar);
+    else setAvatarSrc(DEFAULT_AVATAR);
+  }, [user]);
 
+  /* ---------------------------------------------------------
+     Update admin role instantly when user updates
+  ---------------------------------------------------------- */
   useEffect(() => {
-    const handleClickOutside = (event) => {
-      if (
-        isOpen &&
-        menuRef.current &&
-        !menuRef.current.contains(event.target) &&
-        toggleRef.current &&
-        !toggleRef.current.contains(event.target)
-      ) {
-        setIsOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
-  }, [isOpen]);
-
-  const handleLogout = () => {
-    const logout = window.confirm("Do you really want to Logout?");
-    if (logout) {
-      localStorage.removeItem("token");
-      sessionStorage.removeItem("token");
-      localStorage.removeItem("user");
-      navigate("/");
+    if (typeof user?.isAdmin !== "undefined") {
+      setAdmin(Boolean(user.isAdmin));
+      return;
     }
+
+    if (!token) {
+      setAdmin(false);
+      return;
+    }
+
+    let cancel = false;
+
+    const checkRole = async () => {
+      try {
+        const res = await verifyAdmin();
+        if (!cancel) setAdmin(Boolean(res.isAdmin));
+      } catch {
+        if (!cancel) setAdmin(false);
+      }
+    };
+
+    checkRole();
+    return () => (cancel = true);
+  }, [user, token]);
+
+  /* ---------------------------------------------------------
+     Close dropdown when clicking outside
+  ---------------------------------------------------------- */
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (
+        dropdownOpen &&
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target) &&
+        !avatarRef.current.contains(e.target)
+      ) {
+        setDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener("mousedown", handleClickOutside);
+    return () =>
+      document.removeEventListener("mousedown", handleClickOutside);
+  }, [dropdownOpen]);
+
+  /* ---------------------------------------------------------
+     Close menus when navigating
+  ---------------------------------------------------------- */
+  useEffect(() => {
+    setIsOpen(false);
+    setDropdownOpen(false);
+    setLogoutPopup(false);
+  }, [location.pathname]);
+
+  /* ---------------------------------------------------------
+     Avatar fallback
+  ---------------------------------------------------------- */
+  const onAvatarError = useCallback(() => {
+    if (avatarSrc !== DEFAULT_AVATAR) setAvatarSrc(DEFAULT_AVATAR);
+  }, [avatarSrc]);
+
+  /* ---------------------------------------------------------
+     Logout Confirm
+  ---------------------------------------------------------- */
+  const handleLogoutConfirm = () => {
+    logout(); // ← from provider
+    navigate("/");
+  };
+
+  /* ---------------------------------------------------------
+     Helper to navigate from dropdown
+  ---------------------------------------------------------- */
+  const goTo = (path) => {
+    setDropdownOpen(false);
+    navigate(path);
   };
 
   return (
     <>
       <nav className="navbar">
-        {/* Logo */}
+        {/* LOGO */}
         <div className="navbar__logo">
           <Link to="/home">
             Royal<span className="highlight">Fitz</span>
           </Link>
         </div>
 
-        {/* Desktop Nav Links */}
-        <ul
-          className={`navbar__links ${isOpen ? "active" : ""}`}
-          ref={menuRef}
-        >
+        {/* NAV LINKS */}
+        <ul className={`navbar__links ${isOpen ? "active" : ""}`} ref={menuRef}>
           <li>
             <Link to="/home" onClick={() => setIsOpen(false)}>
               Home
             </Link>
           </li>
+
           <li>
             <Link to="/shop" onClick={() => setIsOpen(false)}>
               Shop
             </Link>
           </li>
 
-          {admin ? (
-            <>
-              <li>
-                <Link to="/adminDashBoard" onClick={() => setIsOpen(false)}>
-                  Orders
-                </Link>
-              </li>
-              {/* <li>
-                <Link to="/notificationPage" onClick={() => setIsOpen(false)}>
-                  Inventory Alerts
-                </Link>
-              </li> */}
-            </>
-          ) : (
+          {admin && (
             <li>
-              <Link to="/cart" onClick={() => setIsOpen(false)}>
-                Cart
+              <Link to="/adminDashBoard" onClick={() => setIsOpen(false)}>
+                Orders
               </Link>
             </li>
           )}
@@ -117,6 +169,7 @@ const Navbar = () => {
               About
             </Link>
           </li>
+
           <li>
             <Link to="/contact" onClick={() => setIsOpen(false)}>
               Contact
@@ -124,34 +177,28 @@ const Navbar = () => {
           </li>
         </ul>
 
-        {/* Icons */}
+        {/* RIGHT AREA */}
         <div className="navbar__icons">
-          <button className="navbar_logout" onClick={handleLogout}>
-            LogOut
-          </button>
-
+          {/* Mobile Toggles */}
           <button
             className="navbar__toggle"
             onClick={toggleMenu}
             ref={toggleRef}
-            aria-label="Toggle menu"
           >
-            {isOpen ? (
-              <FaTimes className="menu_close_icon" size={15} />
-            ) : (
-              <FaBars className="menu_open_icon" size={15} />
-            )}
+            {isOpen ? <FaTimes size={16} /> : <FaBars size={16} />}
           </button>
 
-          {/* Cart Icon (for users only) */}
+          {/* CART */}
           {!admin && (
             <Link to="/cart" className="cart-icon-wrapper">
               <FaShoppingCart className="cart_icon" />
-              {cartCount > 0 && <span className="cart-count">{cartCount}</span>}
+              {cartCount > 0 && (
+                <span className="cart-count">{cartCount}</span>
+              )}
             </Link>
           )}
 
-          {/* Wishlist Icon (for users only) */}
+          {/* WISHLIST */}
           {!admin && (
             <Link to="/wishListPage" className="wishlist-link">
               <FaRegHeart className="wishlist_icon" />
@@ -161,19 +208,65 @@ const Navbar = () => {
             </Link>
           )}
 
-          {/* Notification Icon (for admin only) */}
+          {/* ADMIN NOTIFICATIONS */}
           {admin && (
             <Link to="/notificationPage" className="notification-link">
-              <FaBell className="notification_icon" size={17} />
-              { notificationCount> 0 && <span className="cart-count">{notificationCount}</span> }
+              <FaBell className="notification_icon" />
+              {notificationCount > 0 && (
+                <span className="cart-count">{notificationCount}</span>
+              )}
             </Link>
+          )}
+
+          {/* AVATAR */}
+          <div className="avatar-wrapper">
+            <img
+              ref={avatarRef}
+              src={avatarSrc}
+              alt="User Avatar"
+              className="nav-avatar"
+              onClick={() => setDropdownOpen(!dropdownOpen)}
+              onError={onAvatarError}
+            />
+          </div>
+
+          {/* DROPDOWN */}
+          {dropdownOpen && (
+            <div className="avatar-dropdown" ref={dropdownRef}>
+              <button onClick={() => goTo("/profile")}>My Profile</button>
+              {!admin && (
+                <button onClick={() => goTo("/orders")}>My Orders</button>
+              )}
+              <button onClick={() => setLogoutPopup(true)}>Logout</button>
+            </div>
           )}
         </div>
       </nav>
 
-      {/* Overlay */}
+      {/* MOBILE OVERLAY */}
       {isOpen && (
-        <div className="navbar__overlay" onClick={() => setIsOpen(false)}></div>
+        <div
+          className="navbar__overlay"
+          onClick={() => setIsOpen(false)}
+        ></div>
+      )}
+
+      {/* LOGOUT POPUP */}
+      {logoutPopup && (
+        <div className="logout-popup-overlay">
+          <div className="logout-popup">
+            <h3>Logout</h3>
+            <p>Are you sure you want to logout?</p>
+            <div className="logout-popup-buttons">
+              <button className="confirm-btn" onClick={handleLogoutConfirm}>
+                Logout
+              </button>
+              <button className="cancel-btn" onClick={() => setLogoutPopup(false)}>
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
       )}
     </>
   );

@@ -1,41 +1,41 @@
 import "../styles/ProductCard.css";
 import { useNavigate } from "react-router-dom";
-import {ProductContext} from "../components/ProductProvider.jsx";
+
+function ProductCard({ product, category, getScroll }) {
+  const navigate = useNavigate();
+
+  // Inside handleClick()
+  const handleClick = () => {
+    const scrollPosition = getScroll ? getScroll() : 0;
+
+    console.log("🟣 [ProductCard] Navigating to ProductDetails with:", {
+      scrollPosition,
+      category,
+      productId: product._id,
+    });
+
+    navigate(`/product/${product._id}`, {
+      state: {
+        fromCategory: category || null,
+        scrollPosition,
+      },
+    });
+  };
 
 
-function ProductCard({ product }) {
-    // const [liked, setLiked] = useState(false);
-    const navigate = useNavigate();
-
-    const handleClick = () => {
-        navigate(`/product/${product._id}`);
-    };
-
-    // Convert numeric rating to array of stars
-    const renderStars = () => {
-        const rating = Math.round(product.rating); // e.g., 3.6 -> 4
-        return "⭐".repeat(rating);
-    };
-
-    return (
-        <div
-            className="product-card"
-            onClick={handleClick}
-            tabIndex={0}
-            role="button"
-            onKeyDown={(e) => e.key === "Enter" && handleClick()}
-        >
-           
-            <img
-                src={product.image}
-                alt={`Image of ${product.name}`}
-                className="product-image"
-            />
-            <h3 className="product-name">{product.name}</h3>
-            <p className="product-price">₹ {product.price}</p>
-            <p className="product-rating">{renderStars()}</p>
-        </div>
-    );
+  return (
+    <div
+      className="product-card"
+      onClick={handleClick}
+      tabIndex={0}
+      role="button"
+      onKeyDown={(e) => e.key === "Enter" && handleClick()}
+    >
+      <img src={product.image} alt={product.name} className="product-image" />
+      <h3 className="product-name">{product.name}</h3>
+      <p className="product-price">₹ {product.price}</p>
+    </div>
+  );
 }
 
 export default ProductCard;

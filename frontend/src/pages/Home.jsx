@@ -110,10 +110,11 @@ function Home() {
 
         {/* ✅ Loading animation only inside product section */}
         {products.length === 0 ? (
-          <div className="loading-section">
-            <Lottie className="loadingAnimation" animationData={Loading} loop />
-            <p className="loading-text">Fetching products...</p>
-          </div>
+          
+          <div className="loading-container">
+                    <Lottie className="loadingAnimation" animationData={Loading} loop />
+                  <p className="loading-text">Fetching products...</p>
+            </div>
         ) : (
           <>
             <div className="product-grid">
