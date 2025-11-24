@@ -1,15 +1,14 @@
 .contact-main-container {
     background-image: url("/assets/contact-background.jpg");
     background-repeat: no-repeat;
-    background-size: 100% 100%;      /* Full width, keep height ratio */
-    background-position: top center; /* Center horizontally, start at top */
-    /* background-clip: border-box; */
-    height: 100vh;                   /* Full viewport height */
-    width: 100vw;                    /* Full viewport width */
+    background-size: 100% 100%;      
+    background-position: top center; 
+    
+    height: 100vh;                  
+    width: 100vw;                    
     margin: 0;
-     padding-top: 60px;             /*  Adjust padding as needed for top gap */
-    /* padding-bottom: 60px;            Adjust padding as needed for bottom gap */
-    /* box-sizing: border-box;          Ensure paddings don't reduce width */
+     padding-top: 60px;             
+    
 }
 
 .contact-container {
@@ -261,12 +260,16 @@
   .message-animation-box {
     max-width: 400px;
   }
+  .contact-form button{
+    width: fit-content;
+  }
 }
 
 @media (max-width: 480px) {
   .message-animation-box {
     max-width: 300px;
   }
+  
 }
 
 @media (max-width: 400px) {

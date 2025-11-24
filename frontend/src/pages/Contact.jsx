@@ -72,7 +72,7 @@ function Contact() {
               onChange={handleChange}
               required
             />
-            <button type="submit">Send</button>
+            <button type="submit" >Send  </button>
           </form>
         </div>
 
